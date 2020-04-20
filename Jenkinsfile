@@ -25,7 +25,7 @@ pipeline {
 
     parameters {
         string(
-            name: 'branchref_chambers_app',
+            name: 'branchref_chambers-app',
             defaultValue: 'master',
             description: 'The commit to use for the testing build'
         )
