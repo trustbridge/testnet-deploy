@@ -34,6 +34,11 @@ pipeline {
             defaultValue: 'master',
             description: 'The commit to use for the testing build'
         )
+        booleanParam(
+            name: 'all_tests',
+            defaultValue: false,
+            description: 'Run tests for all components'
+        )
     }
 
     stages {
@@ -49,7 +54,8 @@ pipeline {
                             userRemoteConfigs: [
                                 [
                                     url: 'https://github.com/trustbridge/intergov',
-                                    refspec: '+refs/pull/*/head:refs/remotes/origin/pr/*'
+                                    refspec: '+refs/pull/*/head:refs/remotes/origin/pr/*',
+                                    credentialsId: 'github'
                                 ]
                             ]
                         ]
@@ -67,7 +73,8 @@ pipeline {
                             userRemoteConfigs: [
                                 [
                                     url: 'https://github.com/trustbridge/chambers-app',
-                                    refspec: '+refs/pull/*/head:refs/remotes/origin/pr/*'
+                                    refspec: '+refs/pull/*/head:refs/remotes/origin/pr/*',
+                                    credentialsId: 'github'
                                 ]
                             ]
                         ]
@@ -78,24 +85,47 @@ pipeline {
             }
         }
 
-        stage('Testing') {
-
-            when {
-                branch 'master'
+        stage('Setup Intergov') {
+            steps {
+                dir("${env.DOCKER_BUILD_DIR}/test/intergov/") {
+                    sh '''#!/bin/bash
+                        cp demo-local-example.env demo-local.env
+                        python3.6 pie.py intergov.build
+                        python3.6 pie.py intergov.start
+                        echo "waiting for startup"
+                        sleep 60s
+                    '''
+                }
             }
+        }
+
+        stage('Setup Chambers App') {
+            steps {
+                dir("${env.DOCKER_BUILD_DIR}/test/chambers_app/src/") {
+                    sh '''#!/bin/bash
+                    touch local.env
+                    docker-compose -f docker-compose.yml -f demo.yml up --build -d
+                    sleep 30s
+                    '''
+                }
+            }
+        }
+
+        stage('Testing') {
             stages {
-
-
                 stage('Interov') {
+
+                    when {
+                        anyOf {
+                            equals expected: true, actual: all_tests
+                            not {
+                                equals expected: 'master', actual: params.branchref_intergov
+                            }
+                        }
+                    }
+
                     steps {
                         dir("${env.DOCKER_BUILD_DIR}/test/intergov/") {
-                            sh '''#!/bin/bash
-                                cp demo-local-example.env demo-local.env
-                                python3.6 pie.py intergov.build
-                                python3.6 pie.py intergov.start
-                                echo "waiting for startup"
-                                sleep 120s
-                            '''
 
                             sh '''#!/bin/bash
                                 python3.6 pie.py intergov.tests.unit
@@ -124,12 +154,20 @@ pipeline {
                 }
 
                 stage('Chambers App' ) {
+
+                    when {
+                        anyOf {
+                            equals expected: true, actual: all_tests
+                            not {
+                                equals expected: 'master', actual: params.branchref_chambers_app
+                            }
+                        }
+                    }
+
+
                     steps {
                         dir("${env.DOCKER_BUILD_DIR}/test/chambers_app/src/") {
                             sh '''#!/bin/bash
-                            touch local.env
-                            docker-compose -f docker-compose.yml -f demo.yml up --build -d
-                            sleep 30s
                             docker-compose -f docker-compose.yml -f demo.yml run -T django py.test
                             docker-compose -f docker-compose.yml -f demo.yml run -T django coverage run -m pytest
                             docker-compose -f docker-compose.yml -f demo.yml run -T django coverage html
