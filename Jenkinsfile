@@ -39,7 +39,7 @@ pipeline {
 
         stage('Clone Repos') {
             steps {
-                dir('test/intergov/') {
+                dir("${env.DOCKER_STAGE_DIR}/test/intergov/") {
                     script {
                         def intergov_repo = checkout(
                         [
@@ -52,7 +52,7 @@ pipeline {
                     }
                 }
 
-                dir("test/chambers_app/") {
+                dir("${env.DOCKER_STAGE_DIR}/test/chambers_app/") {
                     script {
                         def chambers_app_repo = checkout(
                         [
@@ -77,7 +77,7 @@ pipeline {
 
                 stage('Interov') {
                     steps {
-                        dir('test/intergov/') {
+                        dir("${env.DOCKER_STAGE_DIR}/test/intergov/") {
                             sh '''#!/bin/bash
                                 cp demo-local-example.env demo-local.env
                                 python3.6 pie.py intergov.build
@@ -95,7 +95,7 @@ pipeline {
 
                     post {
                         always {
-                            dir('test/intergov/'){
+                            dir("${env.DOCKER_STAGE_DIR}/test/intergov/"){
                                 publishHTML(
                                     [
                                         allowMissing: true,
@@ -114,7 +114,7 @@ pipeline {
 
                 stage('Chambers App' ) {
                     steps {
-                        dir('test/chambers_app/src/') {
+                        dir("${env.DOCKER_STAGE_DIR}/test/chambers_app/src/") {
                             sh '''#!/bin/bash
                             touch local.env
                             docker-compose -f docker-compose.yml -f demo.yml up --build -d
@@ -129,7 +129,7 @@ pipeline {
                     post {
                         always {
 
-                            dir('test/chambers_app/src/'){
+                            dir("${env.DOCKER_STAGE_DIR}/test/chambers_app/src/"){
                                 publishHTML(
                                     [
                                         allowMissing: true,
@@ -151,7 +151,7 @@ pipeline {
 
                 always {
                     // Cleanup chambers app
-                    dir('test/chambers_app/src/') {
+                    dir("${env.DOCKER_STAGE_DIR}/test/chambers_app/src/") {
                         sh '''#!/bin/bash
                             if [[ -f docker-compose.yml ]]; then
                                 docker-compose -f docker-compose.yml -f demo.yml down --rmi local -v --remove-orphans
@@ -159,7 +159,7 @@ pipeline {
                         '''
                     }
 
-                    dir('test/intergov/') {
+                    dir("${env.DOCKER_STAGE_DIR}/test/intergov/") {
                         sh '''#!/bin/bash
                             if [[ -f pie.py ]]; then
                                 python3.6 pie.py intergov.destroy
@@ -175,6 +175,9 @@ pipeline {
     post {
         cleanup {
             cleanWs()
+            dir("${env.DOCKER_STAGE_DIR}/") {
+                deleteDir()
+            }
         }
     }
 }
