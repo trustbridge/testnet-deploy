@@ -46,7 +46,12 @@ pipeline {
                         [
                             $class: 'GitSCM',
                             branches: [[name: "${params.branchref_intergov}" ]],
-                            userRemoteConfigs: [[url: 'https://github.com/trustbridge/intergov']]
+                            userRemoteConfigs: [
+                                [
+                                    url: 'https://github.com/trustbridge/intergov',
+                                    refspec: '+refs/pull/*/head:refs/remotes/origin/pr/*'
+                                ]
+                            ]
                         ]
                         )
                         env.intergov_git_commit = intergov_repo.GIT_COMMIT
@@ -59,7 +64,12 @@ pipeline {
                         [
                             $class: 'GitSCM',
                             branches: [[name: "${params.branchref_chambers_app}" ]],
-                            userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
+                            userRemoteConfigs: [
+                                [
+                                    url: 'https://github.com/trustbridge/chambers-app',
+                                    refspec: '+refs/pull/*/head:refs/remotes/origin/pr/*'
+                                ]
+                            ]
                         ]
                         )
                         env.chambers_app_git_commit = chambers_app_repo.GIT_COMMIT
