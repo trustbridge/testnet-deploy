@@ -117,7 +117,7 @@ pipeline {
 
                     when {
                         anyOf {
-                            equals expected: true, actual: all_tests
+                            equals expected: true, actual: params.all_tests
                             not {
                                 equals expected: 'master', actual: params.branchref_intergov
                             }
@@ -157,7 +157,7 @@ pipeline {
 
                     when {
                         anyOf {
-                            equals expected: true, actual: all_tests
+                            equals expected: true, actual: params.all_tests
                             not {
                                 equals expected: 'master', actual: params.branchref_chambers_app
                             }
