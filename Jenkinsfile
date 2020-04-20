@@ -176,9 +176,6 @@ pipeline {
     post {
         cleanup {
             cleanWs()
-            dir("${env.DOCKER_BUILD_DIR}/") {
-                deleteDir()
-            }
         }
     }
 }
