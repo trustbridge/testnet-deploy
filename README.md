@@ -1,4 +1,4 @@
-# testnet-deploy
+# node-operation-example-aws
 
 This repository is used to host the bits and pieces required to deploy trustbridge components into an AWS based environment using the [hamlet](https://hamlet.io) deployment framework.
 
