@@ -44,22 +44,22 @@ pipeline {
         )
 
         booleanParam(
-            name: 'force_chambers'
+            name: 'force_chambers',
             defaultValue : false,
             description: 'Force build of chambers components'
         )
         booleanParam(
-            name: 'force_imports'
+            name: 'force_imports',
             defaultValue: false,
             description: 'Force build of imports components'
         )
         booleanParam(
-            name: 'force_exports'
+            name: 'force_exports',
             defaultValue: false,
             description: 'Force build of exports components'
         )
         booleanParam(
-            name: 'force_intergov'
+            name: 'force_intergov',
             defaultValue: false,
             description: 'Force build of intergov components'
         )
