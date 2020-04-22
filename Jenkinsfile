@@ -82,7 +82,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_chambersapp}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/trustbridge/chambers-app'
+                                ]]
                             ]
                         )
                         env.gitcommit_chambersapp = repoChambersApp.GIT_COMMIT
@@ -139,7 +142,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_intercustomsledger}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/gs-gs/inter-customs-ledger'
+                                ]]
                             ]
                         )
                         env.gitcommit_exportsapp = repoExportsApp.GIT_COMMIT
@@ -197,7 +203,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_intercustomsledger}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/gs-gs/inter-customs-ledger'
+                                ]]
                             ]
                         )
                         env.gitcommit_importsapp = repoImportsApp.GIT_COMMIT
@@ -245,7 +254,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_intergov}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/trustbridge/intergov']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/trustbridge/intergov'
+                                ]]
                             ]
                         )
                         env.gitcommit_intergov = repoIntergov.GIT_COMMIT
