@@ -42,10 +42,26 @@ pipeline {
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
+
         booleanParam(
-            name: 'build_all',
+            name: 'force_chambers',
+            defaultValue : false,
+            description: 'Force build of chambers components'
+        )
+        booleanParam(
+            name: 'force_imports',
             defaultValue: false,
-            description: 'For the build and deploy of all components'
+            description: 'Force build of imports components'
+        )
+        booleanParam(
+            name: 'force_exports',
+            defaultValue: false,
+            description: 'Force build of exports components'
+        )
+        booleanParam(
+            name: 'force_intergov',
+            defaultValue: false,
+            description: 'Force build of intergov components'
         )
     }
 
@@ -54,7 +70,7 @@ pipeline {
         stage('Build_Artefact - Chambers App') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_chambers
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_chambersapp}"
@@ -76,13 +92,16 @@ pipeline {
             }
 
             steps {
-                dir("chambers_app/") {
+                dir("chambers-app/") {
                     script {
                         def repoChambersApp = checkout(
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_chambersapp}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/trustbridge/chambers-app'
+                                ]]
                             ]
                         )
                         env.gitcommit_chambersapp = repoChambersApp.GIT_COMMIT
@@ -95,10 +114,10 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_chambers-app}"
+                    "${env.gitcommit_chambersapp}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambersapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -111,7 +130,7 @@ pipeline {
         stage('Build_Artefact - Exports App') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_exports
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intercustomsledger}"
@@ -128,7 +147,7 @@ pipeline {
                 image_format = 'docker'
                 BUILD_PATH = 'exports-app/exporter_app'
                 DOCKER_CONTEXT_DIR = 'exports-app/exporter_app'
-                BUILD_SRC_DIR = 'src/'
+                BUILD_SRC_DIR = ''
                 DOCKER_FILE = 'exports-app/exporter_app/compose/production/django/Dockerfile'
             }
 
@@ -139,7 +158,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_intercustomsledger}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/gs-gs/inter-customs-ledger'
+                                ]]
                             ]
                         )
                         env.gitcommit_exportsapp = repoExportsApp.GIT_COMMIT
@@ -155,7 +177,7 @@ pipeline {
                     "${env.gitcommit_exportsapp}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_exportsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -168,7 +190,7 @@ pipeline {
         stage('Build_Artefact - Imports App') {
              when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_imports
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intercustomsledger}"
@@ -185,7 +207,7 @@ pipeline {
                 image_format = 'docker'
                 BUILD_PATH = 'imports-app/importer_app'
                 DOCKER_CONTEXT_DIR = 'imports-app/importer_app'
-                BUILD_SRC_DIR = 'src/'
+                BUILD_SRC_DIR = ''
                 DOCKER_FILE = 'imports-app/importer_app/compose/production/django/Dockerfile'
             }
 
@@ -197,7 +219,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_intercustomsledger}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/gs-gs/inter-customs-ledger'
+                                ]]
                             ]
                         )
                         env.gitcommit_importsapp = repoImportsApp.GIT_COMMIT
@@ -210,10 +235,10 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_imports-app}"
+                    "${env.gitcommit_importsapp}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -226,7 +251,7 @@ pipeline {
         stage('Build - Intergov') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_intergov
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -245,7 +270,10 @@ pipeline {
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_intergov}" ]],
-                                userRemoteConfigs: [[url: 'https://github.com/trustbridge/intergov']]
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/trustbridge/intergov'
+                                ]]
                             ]
                         )
                         env.gitcommit_intergov = repoIntergov.GIT_COMMIT
@@ -261,10 +289,10 @@ pipeline {
                         npm install serverless@1.67.3 serverless-python-requirements@5.1.0 serverless-wsgi@1.7.4
                         export PATH="$( npm bin ):$PATH"
 
-                        sls package --package dist/document_api --config "../deploy/deployment/intergov/document_api/lambda/serverless.yml"
-                        sls package --package dist/message_api --config "../../deploy/deployment/intergov/message_api/lambda/serverless.yml"
-                        sls package --package dist/message_rx_api --config "../../deploy/deployment/intergov/message_rx_api/lambda/serverless.yml"
-                        sls package --package dist/subscriptions_api --config "../../deploy/deployment/intergov/subscriptions_api/lambda/serverless.yml"
+                        sls package --package dist/document_api --config "../deploy/intergov/document_api/lambda/serverless.yml"
+                        sls package --package dist/message_api --config "../deploy/intergov/message_api/lambda/serverless.yml"
+                        sls package --package dist/message_rx_api --config "../deploy/intergov/message_rx_api/lambda/serverless.yml"
+                        sls package --package dist/subscriptions_api --config "../deploy/intergov/subscriptions_api/lambda/serverless.yml"
                     '''
                 }
             }
@@ -284,7 +312,7 @@ pipeline {
         stage('Artefact - Intergov - document_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_intergov
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -317,7 +345,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -331,7 +359,7 @@ pipeline {
         stage('Artefact - Intergov - message_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_intergov
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -364,7 +392,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -378,7 +406,7 @@ pipeline {
         stage('Artefact - Intergov - message_rx_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_intergov
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -411,7 +439,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -425,7 +453,7 @@ pipeline {
         stage('Artefact - Intergov - subscriptions_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_intergov
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -458,7 +486,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -473,7 +501,7 @@ pipeline {
         stage('Artefact - Intergov - processor') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.build_all
+                    equals expected: true, actual: params.force_intergov
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -502,7 +530,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/master', parameters: [
+                build job: '../cote-c1/deploy', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),

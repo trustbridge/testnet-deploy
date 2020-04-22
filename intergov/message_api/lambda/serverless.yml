@@ -17,7 +17,7 @@ custom:
     app: intergov.apis.message.lambda.app
     packRequirements: false
   pythonRequirements:
-    dockerizePip: true
+    dockerizePip: 'non-linux'
     invalidateCaches: true
     fileName: requirements/prod.txt
 
