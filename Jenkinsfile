@@ -54,7 +54,7 @@ pipeline {
         stage('Build_Artefact - Chambers App') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_chambersapp}"
@@ -111,7 +111,7 @@ pipeline {
         stage('Build_Artefact - Exports App') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intercustomsledger}"
@@ -168,7 +168,7 @@ pipeline {
         stage('Build_Artefact - Imports App') {
              when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intercustomsledger}"
@@ -226,7 +226,7 @@ pipeline {
         stage('Build - Intergov') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -284,7 +284,7 @@ pipeline {
         stage('Artefact - Intergov - document_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -331,7 +331,7 @@ pipeline {
         stage('Artefact - Intergov - message_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -378,7 +378,7 @@ pipeline {
         stage('Artefact - Intergov - message_rx_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -425,7 +425,7 @@ pipeline {
         stage('Artefact - Intergov - subscriptions_api') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
@@ -473,7 +473,7 @@ pipeline {
         stage('Artefact - Intergov - processor') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.deploy_all
+                    equals expected: true, actual: params.build_all
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_intergov}"
