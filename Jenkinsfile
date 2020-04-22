@@ -139,7 +139,7 @@ pipeline {
                                 userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
                             ]
                         )
-                        env.gitcommit_exports-app = repoExportsApp.GIT_COMMIT
+                        env["gitcommit_exports-app"] = repoExportsApp.GIT_COMMIT
                     }
                 }
 
@@ -195,7 +195,7 @@ pipeline {
                                 userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
                             ]
                         )
-                        env.gitcommit_imports-app = repoImportsApp.GIT_COMMIT
+                        env["gitcommit_imports-app"] = repoImportsApp.GIT_COMMIT
                     }
                 }
 
@@ -234,13 +234,16 @@ pipeline {
                 echo "GIT_COMMIT is ${env.branchref_intergov}"
 
                 dir('intergov/') {
-                    checkout(
-                        [
-                            $class: 'GitSCM',
-                            branches: [[name: "${env.branchref_intergov}" ]],
-                            userRemoteConfigs: [[url: 'https://github.com/trustbridge/intergov']]
-                        ]
-                    )
+                    script {
+                        def repoIntergov = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_intergov}" ]],
+                                userRemoteConfigs: [[url: 'https://github.com/trustbridge/intergov']]
+                            ]
+                        )
+                        env["gitcommit_intergov"] = repoIntergov.GIT_COMMIT
+                    }
 
                     sh '''#!/bin/bash
                         if [[ -d "${HOME}/.nodenv" ]]; then
@@ -304,12 +307,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.intergov_git_commit}"
+                    "${env.gitcommit_intergov}"
                 )
 
                 build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.intergov_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -349,12 +352,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.intergov_git_commit}"
+                    "${env.gitcommit_intergov}"
                 )
 
                 build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.intergov_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -394,12 +397,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.intergov_git_commit}"
+                    "${env.gitcommit_intergov}"
                 )
 
                 build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.intergov_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -439,12 +442,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.intergov_git_commit}"
+                    "${env.gitcommit_intergov}"
                 )
 
                 build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.intergov_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -477,19 +480,16 @@ pipeline {
             }
 
             steps {
-                echo "GIT_COMMIT is ${env.intergov_git_commit}"
-
-
                 uploadImageToRegistry(
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.intergov_git_commit}"
+                    "${env.gitcommit_intergov}"
                 )
 
                 build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.intergov_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
