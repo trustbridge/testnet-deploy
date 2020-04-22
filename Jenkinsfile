@@ -235,7 +235,7 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_imports-app}"
+                    "${env.gitcommit_importsapp}"
                 )
 
                 build job: '../cote-c1/master', parameters: [
