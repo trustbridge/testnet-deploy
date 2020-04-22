@@ -289,10 +289,10 @@ pipeline {
                         npm install serverless@1.67.3 serverless-python-requirements@5.1.0 serverless-wsgi@1.7.4
                         export PATH="$( npm bin ):$PATH"
 
-                        sls package --package dist/document_api --config "../deploy/deployment/intergov/document_api/lambda/serverless.yml"
-                        sls package --package dist/message_api --config "../deploy/deployment/intergov/message_api/lambda/serverless.yml"
-                        sls package --package dist/message_rx_api --config "../deploy/deployment/intergov/message_rx_api/lambda/serverless.yml"
-                        sls package --package dist/subscriptions_api --config "../deploy/deployment/intergov/subscriptions_api/lambda/serverless.yml"
+                        sls package --package dist/document_api --config "../deploy/intergov/document_api/lambda/serverless.yml"
+                        sls package --package dist/message_api --config "../deploy/intergov/message_api/lambda/serverless.yml"
+                        sls package --package dist/message_rx_api --config "../deploy/intergov/message_rx_api/lambda/serverless.yml"
+                        sls package --package dist/subscriptions_api --config "../deploy/intergov/subscriptions_api/lambda/serverless.yml"
                     '''
                 }
             }
