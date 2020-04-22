@@ -57,7 +57,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_chambers-app
+                            equals expected: 'master', actual: "${params.branchref_chambers-app}"
                         }
                         branch 'master'
                     }
@@ -75,28 +75,31 @@ pipeline {
             }
 
             steps {
-                echo "GIT_COMMIT is ${env.branchref_chambers-app}"
-
                 dir("chambers_app/") {
-                    checkout(
-                        [
-                            $class: 'GitSCM',
-                            branches: [[name: "${env.branchref_chambers-app}" ]],
-                            userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
-                        ]
-                    )
+                    script {
+                            def repo_chambers-app = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_chambers-app}" ]],
+                                userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
+                            ]
+                            env.gitcommit_chambers-app = repo_chambers-app.GIT_COMMIT
+                        )
+                    }
                 }
+
+                echo "GIT_COMMIT is ${env.gitcommit_chambers-app}"
 
                 uploadImageToRegistry(
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.chambers_app_git_commit}"
+                    "${env.gitcommit_chambers-app}"
                 )
 
                 build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.chambers_app_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambers-app}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -109,7 +112,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_inter-customs-ledger
+                            equals expected: 'master', actual: "${params.branchref_inter-customs-ledger}"
                         }
                         branch 'master'
                     }
@@ -127,28 +130,32 @@ pipeline {
             }
 
             steps {
-                echo "GIT_COMMIT is ${env.branchref_inter-customs-ledger}"
-
                 dir("exports-app/") {
-                    checkout(
-                        [
-                            $class: 'GitSCM',
-                            branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
-                            userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
-                        ]
-                    )
+                    script {
+
+                            def repo_exports-app = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
+                                userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
+                            ]
+                            env.gitcommit_exports-app = repo_exports-app.GIT_COMMIT
+                        )
+                    }
                 }
+
+                echo "GIT_COMMIT is ${env.gitcommit_exports-app}"
 
                 uploadImageToRegistry(
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.chambers_app_git_commit}"
+                    "${env.gitcommit_exports-app}"
                 )
 
                 build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.chambers_app_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_exports-app}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -179,28 +186,34 @@ pipeline {
             }
 
             steps {
-                echo "GIT_COMMIT is ${env.branchref_inter-customs-ledger}"
 
                 dir("imports-app/") {
-                    checkout(
-                        [
-                            $class: 'GitSCM',
-                            branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
-                            userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
-                        ]
-                    )
+                    script {
+
+                            def repo_imports-app = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
+                                userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
+                            ]
+
+                            env.gitcommit_imports-app = repo_imports-app.GIT_COMMIT
+                        )
+                    }
                 }
+
+                echo "GIT_COMMIT is ${env.gitcommit_imports-app}"
 
                 uploadImageToRegistry(
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.chambers_app_git_commit}"
+                    "${env.gitcommit_imports-app}"
                 )
 
                 build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.chambers_app_git_commit}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_imports-app}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
