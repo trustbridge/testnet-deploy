@@ -84,7 +84,7 @@ pipeline {
                                 userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
                             ]
                         )
-                        env.gitcommit_chambers-app = repoChambersApp.GIT_COMMIT
+                        env["gitcommit_chambers-app"] = repoChambersApp.GIT_COMMIT
                     }
                 }
 
