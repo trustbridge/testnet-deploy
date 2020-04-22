@@ -95,7 +95,7 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_chambers-app}"
+                    "${env.gitcommit_chambersapp}"
                 )
 
                 build job: '../cote-c1/master', parameters: [
