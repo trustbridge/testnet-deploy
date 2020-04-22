@@ -22,7 +22,7 @@ pipeline {
     }
 
     environment {
-        properties_file = "/var/opt/prpoerties/devnet.properties"
+        properties_file = "/var/opt/properties/devnet.properties"
         GITHUB_CREDENTIALS = credentials('github')
     }
 
@@ -67,6 +67,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'www-chm,www-beat-chm,www-work-chm,www-flwr-chm,www-task-chm'
+                segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'chambers-app/'
                 DOCKER_CONTEXT_DIR = 'chambers-app/src/'
@@ -97,11 +98,12 @@ pipeline {
                     "${env.gitcommit_chambers-app}"
                 )
 
-                build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambersapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'SEGMENT', value: "${env.segment}" )
                 ]
             }
         }
@@ -122,6 +124,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'www-exp,www-beat-exp,www-work-exp,www-flwr-exp,www-task-exp'
+                segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'exports-app/exporter_app'
                 DOCKER_CONTEXT_DIR = 'exports-app/exporter_app'
@@ -152,11 +155,12 @@ pipeline {
                     "${env.gitcommit_exportsapp}"
                 )
 
-                build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_exportsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
         }
@@ -177,6 +181,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'www-imp,www-beat-imp,www-work-imp,www-flwr-imp,www-task-imp'
+                segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'imports-app/importer_app'
                 DOCKER_CONTEXT_DIR = 'imports-app/importer_app'
@@ -208,11 +213,12 @@ pipeline {
                     "${env.gitcommit_imports-app}"
                 )
 
-                build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
         }
@@ -291,6 +297,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'document-api-imp'
+                segment = 'intergov'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'intergov/'
             }
@@ -310,11 +317,12 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
 
@@ -336,6 +344,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'message-api-imp'
+                segment = 'intergov'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'intergov/'
             }
@@ -355,11 +364,12 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
 
@@ -381,6 +391,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'messagerx-api-imp'
+                segment = 'intergov'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'intergov/'
             }
@@ -400,11 +411,12 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
 
@@ -426,6 +438,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units = 'subscriptions-api-imp'
+                segment = 'intergov'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'intergov/'
             }
@@ -445,11 +458,12 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
 
@@ -472,6 +486,7 @@ pipeline {
             environment {
                 //hamlet deployment variables
                 deployment_units =  'proc-msg,proc-callbdel,proc-callbspd,proc-rejstat,proc-bchloopback,proc-docspider,proc-channelrouter'
+                segment = 'intergov'
                 image_format = 'docker'
                 BUILD_PATH = 'intergov/'
                 DOCKER_CONTEXT_DIR = 'intergov/'
@@ -487,11 +502,12 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-countrya/cots-intergov/2-Update-Build-References', parameters: [
+                build job: '../cote-c1/master', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
         }
