@@ -102,7 +102,7 @@ pipeline {
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambersapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}" )
                 ]
             }
@@ -159,7 +159,7 @@ pipeline {
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_exportsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
-                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
