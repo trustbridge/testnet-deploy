@@ -28,12 +28,12 @@ pipeline {
 
     parameters {
         string(
-            name: 'branchref_inter-customs-ledger',
+            name: 'branchref_intercustomsledger',
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
         string(
-            name: 'branchref_chambers-app',
+            name: 'branchref_chambersapp',
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
@@ -57,7 +57,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: "${params.branchref_chambers-app}"
+                            equals expected: 'master', actual: "${params.branchref_chambersapp}"
                         }
                         branch 'master'
                     }
@@ -80,15 +80,15 @@ pipeline {
                         def repoChambersApp = checkout(
                             [
                                 $class: 'GitSCM',
-                                branches: [[name: "${env.branchref_chambers-app}" ]],
+                                branches: [[name: "${env.branchref_chambersapp}" ]],
                                 userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
                             ]
                         )
-                        env["gitcommit_chambers-app"] = repoChambersApp.GIT_COMMIT
+                        env.gitcommit_chambersapp = repoChambersApp.GIT_COMMIT
                     }
                 }
 
-                echo "GIT_COMMIT is ${env.gitcommit_chambers-app}"
+                echo "GIT_COMMIT is ${env.gitcommit_chambersapp}"
 
                 uploadImageToRegistry(
                     "${env.properties_file}",
@@ -99,7 +99,7 @@ pipeline {
 
                 build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambers-app}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambersapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -112,7 +112,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: "${params.branchref_inter-customs-ledger}"
+                            equals expected: 'master', actual: "${params.branchref_intercustomsledger}"
                         }
                         branch 'master'
                     }
@@ -135,26 +135,26 @@ pipeline {
                         def repoExportsApp = checkout(
                             [
                                 $class: 'GitSCM',
-                                branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
+                                branches: [[name: "${env.branchref_intercustomsledger}" ]],
                                 userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
                             ]
                         )
-                        env["gitcommit_exports-app"] = repoExportsApp.GIT_COMMIT
+                        env.gitcommit_exportsapp = repoExportsApp.GIT_COMMIT
                     }
                 }
 
-                echo "GIT_COMMIT is ${env.gitcommit_exports-app}"
+                echo "GIT_COMMIT is ${env["gitcommit_exportsapp"]}"
 
                 uploadImageToRegistry(
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_exports-app}"
+                    "${env.gitcommit_exportsapp}"
                 )
 
                 build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_exports-app}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_exportsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -167,7 +167,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_inter-customs-ledger
+                            equals expected: 'master', actual: "${params.branchref_intercustomsledger}"
                         }
                         branch 'master'
                     }
@@ -191,15 +191,15 @@ pipeline {
                         def repoImportsApp = checkout(
                             [
                                 $class: 'GitSCM',
-                                branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
+                                branches: [[name: "${env.branchref_intercustomsledger}" ]],
                                 userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
                             ]
                         )
-                        env["gitcommit_imports-app"] = repoImportsApp.GIT_COMMIT
+                        env.gitcommit_importsapp = repoImportsApp.GIT_COMMIT
                     }
                 }
 
-                echo "GIT_COMMIT is ${env.gitcommit_imports-app}"
+                echo "GIT_COMMIT is ${env.gitcommit_importsapp}"
 
                 uploadImageToRegistry(
                     "${env.properties_file}",
@@ -210,7 +210,7 @@ pipeline {
 
                 build job: '../cote-countrya/cots-clients/2-Update-Build-References', parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_imports-app}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}")
                 ]
@@ -223,7 +223,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_intergov
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
                         }
                         branch 'master'
                     }
@@ -242,7 +242,7 @@ pipeline {
                                 userRemoteConfigs: [[url: 'https://github.com/trustbridge/intergov']]
                             ]
                         )
-                        env["gitcommit_intergov"] = repoIntergov.GIT_COMMIT
+                        env.gitcommit_intergov = repoIntergov.GIT_COMMIT
                     }
 
                     sh '''#!/bin/bash
@@ -281,7 +281,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_intergov
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
                         }
                         branch 'master'
                     }
@@ -326,7 +326,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_intergov
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
                         }
                         branch 'master'
                     }
@@ -371,7 +371,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_intergov
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
                         }
                         branch 'master'
                     }
@@ -416,7 +416,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_intergov
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
                         }
                         branch 'master'
                     }
@@ -462,7 +462,7 @@ pipeline {
                     equals expected: true, actual: params.deploy_all
                     allOf {
                         not {
-                            equals expected: 'master', actual: params.branchref_intergov
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
                         }
                         branch 'master'
                     }
