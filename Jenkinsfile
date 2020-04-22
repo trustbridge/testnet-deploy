@@ -147,7 +147,7 @@ pipeline {
                 image_format = 'docker'
                 BUILD_PATH = 'exports-app/exporter_app'
                 DOCKER_CONTEXT_DIR = 'exports-app/exporter_app'
-                BUILD_SRC_DIR = 'src/'
+                BUILD_SRC_DIR = ''
                 DOCKER_FILE = 'exports-app/exporter_app/compose/production/django/Dockerfile'
             }
 
@@ -207,7 +207,7 @@ pipeline {
                 image_format = 'docker'
                 BUILD_PATH = 'imports-app/importer_app'
                 DOCKER_CONTEXT_DIR = 'imports-app/importer_app'
-                BUILD_SRC_DIR = 'src/'
+                BUILD_SRC_DIR = ''
                 DOCKER_FILE = 'imports-app/importer_app/compose/production/django/Dockerfile'
             }
 
