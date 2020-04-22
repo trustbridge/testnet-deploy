@@ -77,14 +77,14 @@ pipeline {
             steps {
                 dir("chambers_app/") {
                     script {
-                            def repo_chambers-app = checkout(
+                        def repoChambersApp = checkout(
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_chambers-app}" ]],
                                 userRemoteConfigs: [[url: 'https://github.com/trustbridge/chambers-app']]
                             ]
-                            env.gitcommit_chambers-app = repo_chambers-app.GIT_COMMIT
                         )
+                        env.gitcommit_chambers-app = repoChambersApp.GIT_COMMIT
                     }
                 }
 
@@ -132,15 +132,14 @@ pipeline {
             steps {
                 dir("exports-app/") {
                     script {
-
-                            def repo_exports-app = checkout(
+                        def repoExportsApp = checkout(
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
                                 userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
                             ]
-                            env.gitcommit_exports-app = repo_exports-app.GIT_COMMIT
                         )
+                        env.gitcommit_exports-app = repoExportsApp.GIT_COMMIT
                     }
                 }
 
@@ -189,16 +188,14 @@ pipeline {
 
                 dir("imports-app/") {
                     script {
-
-                            def repo_imports-app = checkout(
+                        def repoImportsApp = checkout(
                             [
                                 $class: 'GitSCM',
                                 branches: [[name: "${env.branchref_inter-customs-ledger}" ]],
                                 userRemoteConfigs: [[url: 'https://github.com/gs-gs/inter-customs-ledger']]
                             ]
-
-                            env.gitcommit_imports-app = repo_imports-app.GIT_COMMIT
                         )
+                        env.gitcommit_imports-app = repoImportsApp.GIT_COMMIT
                     }
                 }
 
