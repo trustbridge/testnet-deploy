@@ -309,6 +309,7 @@ pipeline {
             }
         }
 
+        // Intergov - API Lambdas
         stage('Artefact - Intergov - document_api') {
             when {
                 anyOf {
@@ -497,7 +498,7 @@ pipeline {
 
         }
 
-        // hamlet specifc artefact storage
+        // Intergov - Processors
         stage('Artefact - Intergov - processor') {
             when {
                 anyOf {
@@ -539,6 +540,200 @@ pipeline {
                 ]
             }
         }
+
+        // Intergov - API Gateways
+        stage('Artefact - Intergov - document_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.build_all
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'document-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('intergov/document_api/apigw') {
+                    sh '''
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ../../dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/master', parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Intergov - message_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.build_all
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'message-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('intergov/message_api/apigw') {
+                    sh '''
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ../../dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/master', parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Intergov - message_rx_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.build_all
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'messagerx-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('intergov/message_rx_api/apigw') {
+                    sh '''
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ../../dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/master', parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Intergov - subscriptions_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.build_all
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'subscriptions-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('intergov/subscriptions_api/apigw') {
+                    sh '''
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ../../dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/master', parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
     }
 
     post {
