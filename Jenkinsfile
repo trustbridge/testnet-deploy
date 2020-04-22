@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         string(
-            name: 'branchref_inter-customs-ledger'
+            name: 'branchref_inter-customs-ledger',
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
