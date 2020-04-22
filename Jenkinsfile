@@ -76,7 +76,7 @@ pipeline {
             }
 
             steps {
-                dir("chambers_app/") {
+                dir("chambers-app/") {
                     script {
                         def repoChambersApp = checkout(
                             [
