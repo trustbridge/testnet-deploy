@@ -522,11 +522,11 @@ pipeline {
 
             steps {
 
-                dir('intergov/document_api/apigw') {
+                dir('deploy/intergov/document_api/apigw') {
                     sh '''
                         mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
-                        cp "swagger.zip" ../../dist/swagger.zip
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
                     '''
                 }
 
@@ -571,11 +571,11 @@ pipeline {
 
             steps {
 
-                dir('intergov/message_api/apigw') {
+                dir('deploy/intergov/message_api/apigw') {
                     sh '''
                         mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
-                        cp "swagger.zip" ../../dist/swagger.zip
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
                     '''
                 }
 
@@ -620,11 +620,11 @@ pipeline {
 
             steps {
 
-                dir('intergov/message_rx_api/apigw') {
+                dir('deploy/intergov/message_rx_api/apigw') {
                     sh '''
                         mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
-                        cp "swagger.zip" ../../dist/swagger.zip
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
                     '''
                 }
 
@@ -669,11 +669,11 @@ pipeline {
 
             steps {
 
-                dir('intergov/subscriptions_api/apigw') {
+                dir('deploy/intergov/subscriptions_api/apigw') {
                     sh '''
                         mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
-                        cp "swagger.zip" ../../dist/swagger.zip
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
                     '''
                 }
 
