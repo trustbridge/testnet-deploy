@@ -117,7 +117,7 @@ pipeline {
                     "${env.gitcommit_chambersapp}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambersapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -177,7 +177,7 @@ pipeline {
                     "${env.gitcommit_exportsapp}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_exportsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -238,7 +238,7 @@ pipeline {
                     "${env.gitcommit_importsapp}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -346,7 +346,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -393,7 +393,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -440,7 +440,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -487,7 +487,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -537,7 +537,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -586,7 +586,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -635,7 +635,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -684,7 +684,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -728,7 +728,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
