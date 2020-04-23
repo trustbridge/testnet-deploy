@@ -125,6 +125,24 @@ pipeline {
                         string(name: 'SEGMENT', value: "${env.segment}" )
                 ]
             }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Chambers App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Chambers App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
         }
 
         stage('Build_Artefact - Exports App') {
@@ -184,6 +202,24 @@ pipeline {
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Exporter App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Expoter App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
             }
         }
 
@@ -246,6 +282,24 @@ pipeline {
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Importer App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Importer App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
         }
 
         stage('Build - Intergov') {
@@ -305,6 +359,20 @@ pipeline {
                         archiveArtifacts artifacts: 'dist/message_rx_api/message_rx_api.zip', fingerprint: true
                         archiveArtifacts artifacts: 'dist/subscriptions_api/subscriptions_api.zip', fingerprint: true
                     }
+
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Lambda Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Lambda Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
                 }
             }
         }
@@ -735,6 +803,24 @@ pipeline {
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Container Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Container Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
             }
         }
 
