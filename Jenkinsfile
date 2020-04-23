@@ -117,13 +117,31 @@ pipeline {
                     "${env.gitcommit_chambersapp}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_chambersapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}" )
                 ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Chambers App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Chambers App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
             }
         }
 
@@ -177,13 +195,31 @@ pipeline {
                     "${env.gitcommit_exportsapp}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_exportsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Exporter App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Expoter App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
             }
         }
 
@@ -238,13 +274,31 @@ pipeline {
                     "${env.gitcommit_importsapp}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Importer App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Importer App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
             }
         }
 
@@ -305,10 +359,25 @@ pipeline {
                         archiveArtifacts artifacts: 'dist/message_rx_api/message_rx_api.zip', fingerprint: true
                         archiveArtifacts artifacts: 'dist/subscriptions_api/subscriptions_api.zip', fingerprint: true
                     }
+
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Lambda Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Lambda Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
                 }
             }
         }
 
+        // Intergov - API Lambdas
         stage('Artefact - Intergov - document_api') {
             when {
                 anyOf {
@@ -345,7 +414,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -392,7 +461,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -439,7 +508,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -486,7 +555,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -497,7 +566,204 @@ pipeline {
 
         }
 
-        // hamlet specifc artefact storage
+        // Intergov - API Gateways
+        stage('Artefact - Intergov - document_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_intergov
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'document-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('deploy/intergov/document_api/apigw') {
+                    sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Intergov - message_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_intergov
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'message-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('deploy/intergov/message_api/apigw') {
+                    sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Intergov - message_rx_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_intergov
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'messagerx-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('deploy/intergov/message_rx_api/apigw') {
+                    sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Intergov - subscriptions_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_intergov
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_intergov}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'subscriptions-api'
+                segment = 'intergov'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'intergov/'
+            }
+
+            steps {
+
+                dir('deploy/intergov/subscriptions_api/apigw') {
+                    sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
+                        zip -j "swagger.zip" "swagger-extended-base.json"
+                        cp "swagger.zip" ${WORKSPACE}/intergov/dist/swagger.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        // Intergov - Processors
         stage('Artefact - Intergov - processor') {
             when {
                 anyOf {
@@ -530,7 +796,7 @@ pipeline {
                     "${env.gitcommit_intergov}"
                 )
 
-                build job: '../cote-c1/deploy', parameters: [
+                build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -538,7 +804,26 @@ pipeline {
                         string(name: 'SEGMENT', value: "${env.segment}")
                 ]
             }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Container Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Intergov Container Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
         }
+
     }
 
     post {
