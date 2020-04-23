@@ -524,6 +524,7 @@ pipeline {
 
                 dir('intergov/document_api/apigw') {
                     sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
                         cp "swagger.zip" ../../dist/swagger.zip
                     '''
@@ -572,6 +573,7 @@ pipeline {
 
                 dir('intergov/message_api/apigw') {
                     sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
                         cp "swagger.zip" ../../dist/swagger.zip
                     '''
@@ -620,6 +622,7 @@ pipeline {
 
                 dir('intergov/message_rx_api/apigw') {
                     sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
                         cp "swagger.zip" ../../dist/swagger.zip
                     '''
@@ -668,6 +671,7 @@ pipeline {
 
                 dir('intergov/subscriptions_api/apigw') {
                     sh '''
+                        mv "swagger.json" "swagger-extended-base.json"
                         zip -j "swagger.zip" "swagger-extended-base.json"
                         cp "swagger.zip" ../../dist/swagger.zip
                     '''
