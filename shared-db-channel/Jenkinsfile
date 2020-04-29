@@ -149,7 +149,7 @@ pipeline {
 
                 build job: '../cote-services/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_shareddbchannel}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
@@ -204,7 +204,7 @@ pipeline {
 
                 build job: '../cote-services/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_shareddbchannel}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
