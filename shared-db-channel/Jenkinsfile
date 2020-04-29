@@ -186,10 +186,11 @@ pipeline {
                     pip install -r requirements.txt
                     python ./manage.py generate_swagger
 
+                    ls -la ./
                     mkdir -p dist
-                    mv "swagger.json" "swagger-extended-base.json"
-                    zip -j "swagger.zip" "swagger-extended-base.json"
-                    cp "swagger.zip" dist/swagger.zip
+                    mv swagger.json swagger-extended-base.json
+                    zip -j swagger.zip swagger-extended-base.json
+                    cp swagger.zip dist/swagger.zip
 
                     '''
                 }
