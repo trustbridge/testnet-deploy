@@ -42,6 +42,11 @@ pipeline {
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
+        string(
+            name: 'branchref_shareddbchannel',
+            defaultValue: 'master',
+            description: 'The commit to use for the deploy'
+        )
 
         booleanParam(
             name: 'force_chambers',
@@ -63,10 +68,15 @@ pipeline {
             defaultValue: false,
             description: 'Force build of intergov components'
         )
+        booleanParam(
+            name: 'force_shareddbchannel',
+            defaultValue: false,
+            description: 'Force build of intergov components'
+        )
     }
 
     stages {
-        // hamlet specifc artefact storage
+        // Django Apps
         stage('Build_Artefact - Chambers App') {
             when {
                 anyOf {
@@ -302,6 +312,178 @@ pipeline {
             }
         }
 
+        // Shared DB Channel
+        stage('Build - Shared DB Channel') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_shareddbchannel
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_shareddbchannel}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            steps {
+                echo "GIT_COMMIT is ${env.branchref_shareddbchannel}"
+
+                dir('shared-db-channel/') {
+                    script {
+                        def repoSharedDbChannel = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_shareddbchannel}" ]],
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/trustbridge/shared-db-channel'
+                                ]]
+                            ]
+                        )
+                        env.gitcommit_shareddbchannel = repoSharedDbChannel.GIT_COMMIT
+                    }
+
+                    sh '''#!/bin/bash
+                        if [[ -d "${HOME}/.nodenv" ]]; then
+                            export PATH="$HOME/.nodenv/bin:$PATH"
+                            eval "$(nodenv init - )"
+                            nodenv install 12.16.1 || true
+                            nodenv shell 12.16.1
+                        fi
+                        npm install serverless@1.67.3 serverless-python-requirements@5.1.0 serverless-wsgi@1.7.4
+                        export PATH="$( npm bin ):$PATH"
+
+                        sls package --package dist/channel_api --config "../deploy/shared-db-channel/channel_api/lambda/serverless.yml"
+                    '''
+                }
+            }
+
+            post {
+                success {
+                    dir('shared-db-channel/') {
+                        archiveArtifacts artifacts: 'dist/channel_api/channel_api.zip', fingerprint: true
+                    }
+
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Shared DB Channel Lambda Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Shared DB Channel Lambda Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
+        }
+
+        stage('Artefact - Shared DB Channel - channel_api') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_shareddbchannel
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_shareddbchannel}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'sharedchannel-api-imp'
+                segment = 'channel'
+                image_format = 'lambda'
+                BUILD_SRC_DIR = 'shared-cb-channel/'
+            }
+
+            steps {
+
+                dir('shared-db-channel') {
+                    sh '''
+                        cp dist/channel_api/channel_api.zip dist/lambda.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-services/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Shared DB Channel - channel_apigw') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_shareddbchannel
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_shareddbchannel}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'sharedchannel'
+                segment = 'channel'
+                image_format = 'swagger'
+                BUILD_SRC_DIR = 'shared-db-channel/'
+            }
+
+            steps {
+
+                dir('shared-db-channel/') {
+                    sh '''
+                    pip install -r requirements.txt
+                    python ./manage.py generate_swagger
+
+                    mkdir -p dist
+                    mv "swagger.json" "swagger-extended-base.json"
+                    zip -j "swagger.zip" "swagger-extended-base.json"
+                    cp "swagger.zip" dist/swagger.zip
+
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_intergov}"
+                )
+
+                build job: '../cote-services/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_intergov}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        // Intergov - API Lambdas
         stage('Build - Intergov') {
             when {
                 anyOf {
@@ -377,7 +559,6 @@ pipeline {
             }
         }
 
-        // Intergov - API Lambdas
         stage('Artefact - Intergov - document_api') {
             when {
                 anyOf {
