@@ -144,7 +144,7 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_intergov}"
+                    "${env.gitcommit_shareddbchannel}"
                 )
 
                 build job: '../cote-services/deploy', wait: false, parameters: [
@@ -199,7 +199,7 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_intergov}"
+                    "${env.gitcommit_shareddbchannel}"
                 )
 
                 build job: '../cote-services/deploy', wait: false, parameters: [
