@@ -129,12 +129,12 @@ pipeline {
                 deployment_units = 'sharedchannel-api-imp'
                 segment = 'channel'
                 image_format = 'lambda'
-                BUILD_SRC_DIR = 'shared-cb-channel/'
+                BUILD_SRC_DIR = 'shared-db-channel/'
             }
 
             steps {
 
-                dir('shared-db-channel') {
+                dir('shared-db-channel/') {
                     sh '''
                         cp dist/channel_api/channel_api.zip dist/lambda.zip
                     '''
