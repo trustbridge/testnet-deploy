@@ -186,14 +186,12 @@ pipeline {
                     pip install -r requirements.txt
                     python ./manage.py generate_swagger
 
-                    ls -la ./
                     mkdir -p dist
 
                     cat swagger.yaml | python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' > swagger.json
                     mv swagger.json swagger-extended-base.json
                     zip -j swagger.zip swagger-extended-base.json
                     cp swagger.zip dist/swagger.zip
-
                     '''
                 }
 
