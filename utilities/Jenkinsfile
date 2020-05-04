@@ -188,6 +188,14 @@ pipeline {
                         string(name: 'SEGMENT', value: "mgmt")
                 ]
 
+                build job: '../cote-services/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "channel")
+                ]
+
                  build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
@@ -318,6 +326,14 @@ pipeline {
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "mgmt")
+                ]
+
+                build job: '../cote-services/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "channel")
                 ]
 
                  build job: '../cote-c1/deploy', wait: false, parameters: [
