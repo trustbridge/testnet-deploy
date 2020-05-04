@@ -33,18 +33,29 @@ pipeline {
             description: 'The commit to use for the deploy'
         )
 
+        string(
+            name: 'branchref_lambdacloudwatchslack',
+            defaultValue: 'master',
+            description: 'The commit to use for the deploy'
+
+        )
+
         booleanParam(
             name: 'force_cwlogfirehose',
             defaultValue: false,
-            description: 'Force build of intergov components'
+            description: 'Force build of cwlog firehose components'
+        )
+
+        booleanParam(
+            name: 'force_cwlogslack',
+            defaultValue: false,
+            description: 'Force build of cwlog slack components'
         )
     }
 
     stages {
         stage('Repo Setup') {
             steps {
-                echo "GIT_COMMIT is ${env.branchref_lambdalogprocessors}"
-
                 dir('lambda-log-processors/') {
                     script {
                         def repoLambdaLogProcessors = checkout(
@@ -58,6 +69,22 @@ pipeline {
                             ]
                         )
                         env.gitcommit_lambdalogprocessors = repoLambdaLogProcessors.GIT_COMMIT
+                    }
+                }
+
+                dir('lambda-cloudwatch-slack/') {
+                    script {
+                        def repoLambdaCloudWatchSlack = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_lambdalogprocessors}" ]],
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/codeontap/lambda-cloudwatch-slack'
+                                ]]
+                            ]
+                        )
+                        env.gitcommit_lambdacloudwatchslack = repoLambdaCloudWatchSlack.GIT_COMMIT
                     }
                 }
             }
@@ -143,6 +170,138 @@ pipeline {
                 dir('lambda-log-processors/cloudwatch-firehose-es/') {
                     sh '''
                         cp dist/cloudwatch-firehose/cloudwatch-firehose.zip dist/lambda.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_lambdalogprocessors}"
+                )
+
+                build job: '../cote-services/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "mgmt")
+                ]
+
+                 build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "clients")
+                ]
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "intergov")
+                ]
+
+                build job: '../cote-c2/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "clients")
+                ]
+
+                build job: '../cote-c2/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "intergov")
+                ]
+            }
+
+        }
+
+        // Build Cloudwatch Alarm Slack
+        stage('Build - CW Alarm Slack' ) {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_cwlogslack
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_lambdacloudwatchslack}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            steps {
+                dir('lambda-cloudwatch-slack/') {
+                    sh '''#!/bin/bash
+                        if [[ -d "${HOME}/.nodenv" ]]; then
+                            export PATH="$HOME/.nodenv/bin:$PATH"
+                            eval "$(nodenv init - )"
+                            nodenv install 12.16.1 || true
+                            nodenv shell 12.16.1
+                        fi
+                        npm install serverless@1.67.3 serverless-python-requirements@5.1.0
+                        export PATH="$( npm bin ):$PATH"
+
+                        sls package --package dist/cloudwatch-slack/ --config "./serverless.yml"
+                    '''
+                }
+            }
+
+            post {
+                success {
+                    dir('lambda-cloudwatch-slack/') {
+                        archiveArtifacts artifacts: 'dist/cloudwatch-slack/cloudwatch-slack.zip', fingerprint: true
+                    }
+
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Utility Cloudwatch Slack Lambda Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Utility Cloudwatch Slack Lambda Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
+        }
+
+        stage('Artefact - CW Alarm Slack- lambda') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_cwlogslack
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_lambdacloudwatchslack}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'alert-slack'
+                image_format = 'lambda'
+                BUILD_SRC_DIR = 'lambda-cloudwatch-slack/'
+            }
+
+            steps {
+
+                dir('lambda-cloudwatch-slack/') {
+                    sh '''
+                        cp dist/cloudwatch-slack/cloudwatch-slack.zip dist/lambda.zip
                     '''
                 }
 
