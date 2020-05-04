@@ -68,7 +68,7 @@ pipeline {
         stage('Build - CW Log Firehose' ) {
             when {
                 anyOf {
-                    equals expected: true, actual: params.branchref_lambdalogprocessors
+                    equals expected: true, actual: params.force_cwlogfirehose
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_lambdalogprocessors}"
@@ -79,8 +79,6 @@ pipeline {
             }
 
             steps {
-                echo "GIT_COMMIT is ${env.branchref_lambdalogprocessors}"
-
                 dir('lambda-log-processors/cloudwatch-firehose-es/') {
                     sh '''#!/bin/bash
                         if [[ -d "${HOME}/.nodenv" ]]; then
