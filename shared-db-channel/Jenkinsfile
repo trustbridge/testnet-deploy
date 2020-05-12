@@ -84,6 +84,7 @@ pipeline {
                         export PATH="$( npm bin ):$PATH"
 
                         sls package --package dist/channel_api --config "../deploy/shared-db-channel/channel_api/lambda/serverless.yml"
+                        sls package --package dist/utilities --config "../deploy/shared-db-channel/utilties/lambda/serverless.yml"
                     '''
                 }
             }
@@ -92,6 +93,7 @@ pipeline {
                 success {
                     dir('shared-db-channel/') {
                         archiveArtifacts artifacts: 'dist/channel_api/channel_api.zip', fingerprint: true
+                        archiveArtifacts artifacts: 'dist/utilities/channel_api.zip', fingerprint: true
                     }
 
                     slackSend (
@@ -137,6 +139,53 @@ pipeline {
                 dir('shared-db-channel/') {
                     sh '''
                         cp dist/channel_api/channel_api.zip dist/lambda.zip
+                    '''
+                }
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_shareddbchannel}"
+                )
+
+                build job: '../cote-services/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_shareddbchannel}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}")
+                ]
+            }
+
+        }
+
+        stage('Artefact - Shared DB Channel - Utilities') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_utilities
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_shareddbchannel}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'sharedchannel-utilities'
+                segment = 'channel'
+                image_format = 'lambda'
+                BUILD_SRC_DIR = 'shared-db-channel/'
+            }
+
+            steps {
+
+                dir('shared-db-channel/') {
+                    sh '''
+                        cp dist/utilities/shared-db-channel-utilities.zip dist/lambda.zip
                     '''
                 }
 
