@@ -93,7 +93,7 @@ pipeline {
                 success {
                     dir('shared-db-channel/') {
                         archiveArtifacts artifacts: 'dist/channel_api/channel_api.zip', fingerprint: true
-                        archiveArtifacts artifacts: 'dist/utilities/channel_api.zip', fingerprint: true
+                        archiveArtifacts artifacts: 'dist/utilities/shared-db-channel-utilities.zip', fingerprint: true
                     }
 
                     slackSend (
