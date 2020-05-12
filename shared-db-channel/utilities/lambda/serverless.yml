@@ -1,0 +1,30 @@
+service: shared-db-channel-utilities
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  individually: false
+  include:
+    - '!./**'
+    - './api/**'
+    - './migrations/**'
+    - './lambda_manage.py'
+  exclude:
+    - '**'
+
+custom:
+  pythonRequirements:
+    dockerizePip: 'non-linux'
+    invalidateCaches: true
+    fileName: requirements.txt
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: ap-southeast-2
+
+functions:
+  db_util:
+    handler: lambda_manage.dbupgrade_handler
