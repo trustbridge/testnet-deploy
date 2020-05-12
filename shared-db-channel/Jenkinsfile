@@ -84,7 +84,7 @@ pipeline {
                         export PATH="$( npm bin ):$PATH"
 
                         sls package --package dist/channel_api --config "../deploy/shared-db-channel/channel_api/lambda/serverless.yml"
-                        sls package --package dist/utilities --config "../deploy/shared-db-channel/utilties/lambda/serverless.yml"
+                        sls package --package dist/utilities --config "../deploy/shared-db-channel/utilities/lambda/serverless.yml"
                     '''
                 }
             }
