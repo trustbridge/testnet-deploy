@@ -37,7 +37,17 @@ pipeline {
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
+        string(
+            name: 'branchref_tradeportal',
+            defaultValue: 'master',
+            description: 'The commit to use for the deploy'
+        )
 
+        booleanParam(
+            name: 'force_tradeportal',
+            defaultValue : false,
+            description: 'Force build of trande portal components'
+        )
         booleanParam(
             name: 'force_chambers',
             defaultValue : false,
@@ -57,6 +67,84 @@ pipeline {
 
     stages {
         // Django Apps
+        stage('Build_Artefact - Trade Portal') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_tradeportal
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_tradeportal}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'www-trp,www-beat-trp,www-work-trp,www-flwr-trp,www-task-trp'
+                segment = 'clients'
+                image_format = 'docker'
+                BUILD_PATH = 'tradeportal-app/'
+                DOCKER_CONTEXT_DIR = 'tradeportal-app/trade_portal/'
+                BUILD_SRC_DIR = 'trade_portal/'
+                DOCKER_FILE = 'tradeportal-app/trade_portal/compose/production/django/Dockerfile'
+            }
+
+            steps {
+                dir("tradeportal-app/") {
+                    script {
+                        def repoTradePortal = checkout(
+                            [
+                                $class: 'GitSCM',
+                                branches: [[name: "${env.branchref_chambersapp}" ]],
+                                userRemoteConfigs: [[
+                                    credentialsId: 'github',
+                                    url: 'https://github.com/trustbridge/trade_portal'
+                                ]]
+                            ]
+                        )
+                        env.gitcommit_tradeportal = repoTradePortal.GIT_COMMIT
+                    }
+                }
+
+                echo "GIT_COMMIT is ${env.gitcommit_tradeportal}"
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_tradeportal}"
+                )
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_tradeportal}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}" )
+                ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Trade Portal App Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Trade Portal App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
+        }
+
         stage('Build_Artefact - Chambers App') {
             when {
                 anyOf {
