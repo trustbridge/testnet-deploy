@@ -97,7 +97,7 @@ pipeline {
                         def repoTradePortal = checkout(
                             [
                                 $class: 'GitSCM',
-                                branches: [[name: "${env.branchref_chambersapp}" ]],
+                                branches: [[name: "${env.branchref_tradeportal}" ]],
                                 userRemoteConfigs: [[
                                     credentialsId: 'github',
                                     url: 'https://github.com/trustbridge/trade_portal'
