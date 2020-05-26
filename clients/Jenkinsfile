@@ -82,7 +82,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'www-trp,www-beat-trp,www-work-trp,www-flwr-trp,www-task-trp'
+                deployment_units = 'www-trd,www-task-trd,www-beat-trd,www-work-trd,www-flwr-trd,www-dbinit-trd'
                 segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'tradeportal-app/'
@@ -160,7 +160,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'www-chm,www-beat-chm,www-work-chm,www-flwr-chm,www-task-chm'
+                deployment_units = 'www-chm,www-task-chm,www-beat-chm,www-work-chm,www-flwr-chm,www-dbinit-chm'
                 segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'chambers-app/'
@@ -238,7 +238,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'www-exp,www-beat-exp,www-work-exp,www-flwr-exp,www-task-exp'
+                deployment_units = 'www-exp,www-task-exp,www-beat-exp,www-work-exp,www-flwr-exp,www-dbinit-exp'
                 segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'exports-app/exporter_app'
@@ -316,7 +316,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'www-imp,www-beat-imp,www-work-imp,www-flwr-imp,www-task-imp'
+                deployment_units = 'www-imp,www-task-imp,www-beat-imp,www-work-imp,www-flwr-imp,www-dbinit-imp'
                 segment = 'clients'
                 image_format = 'docker'
                 BUILD_PATH = 'imports-app/importer_app'
