@@ -110,6 +110,13 @@ pipeline {
 
                 echo "GIT_COMMIT is ${env.gitcommit_tradeportal}"
 
+                dir("tradeportal-app/trade_portal/trade_portal") {
+                    sh '''
+                        npm ci
+                        npm run build
+                    '''
+                }
+
                 uploadImageToRegistry(
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
