@@ -170,7 +170,7 @@ pipeline {
         stage('Artefact - Shared DB Channel - Utilities') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.force_utilities
+                    equals expected: true, actual: params.force_shareddbchannel
                     allOf {
                         not {
                             equals expected: 'master', actual: "${params.branchref_shareddbchannel}"
@@ -235,7 +235,7 @@ pipeline {
                 BUILD_SRC_DIR = 'shared-db-channel/'
 
                 // App specific
-                IGL_SUBSCRIPTIONS_REPO_USE_SSL = '0'
+                IGL_SUBSCRIPTIONS_REPO_USE_SSL = 'false'
             }
 
             steps {
