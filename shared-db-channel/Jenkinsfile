@@ -233,6 +233,9 @@ pipeline {
                 segment = 'channel'
                 image_format = 'swagger'
                 BUILD_SRC_DIR = 'shared-db-channel/'
+
+                // App specific
+                IGL_SUBSCRIPTIONS_REPO_USE_SSL = '0'
             }
 
             steps {
@@ -269,7 +272,7 @@ pipeline {
 
         }
 
-        stage('Build - Procssoer') {
+        stage('Build - Processor') {
              when {
                 anyOf {
                     equals expected: true, actual: params.force_shareddbchannel
