@@ -235,7 +235,16 @@ pipeline {
                 BUILD_SRC_DIR = 'shared-db-channel/'
 
                 // App specific
-                IGL_SUBSCRIPTIONS_REPO_USE_SSL = 'false'
+                IGL_DEFAULT_SQS_USE_SSL = 'false'
+                IGL_DEFAULT_SQS_HOST = 'sqs.local'
+                IGL_DEFAULT_SQS_PORT = '443'
+                IGL_DEFAULT_SQS_REGION = 'ap-southeast-2'
+
+                IGL_DEFAULT_S3_USE_SSL = 'false'
+                IGL_DEFAULT_S3_HOST = 's3.local'
+                IGL_DEFAULT_S3_PORT = '443'
+                IGL_DEFAULT_S3_REGION = 'ap-southeast-2'
+
             }
 
             steps {
