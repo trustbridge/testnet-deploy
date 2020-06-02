@@ -50,7 +50,7 @@ pipeline {
                         def repoSharedDbChannel = checkout(
                             [
                                 $class: 'GitSCM',
-                                branches: [[name: "${env.branchref_shareddbchannel}" ]],
+                                branches: [[name: "${params.branchref_shareddbchannel}" ]],
                                 userRemoteConfigs: [[
                                     credentialsId: 'github',
                                     url: 'https://github.com/trustbridge/shared-db-channel'
