@@ -193,7 +193,8 @@ pipeline {
 
                 dir('ethereum_channel/channel-api/') {
                     sh '''
-                    zip -j openapi.zip openapi.json
+                    mv openapi.json openapi-extended-base.json
+                    zip -j openapi.zip openapi-extended-base.json
                     cp openapi.zip dist/openapi.zip
                     '''
                 }
