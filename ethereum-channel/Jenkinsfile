@@ -51,7 +51,7 @@ pipeline {
                                 branches: [[name: "${params.branchref_ethereum_channel}" ]],
                                 userRemoteConfigs: [[
                                     credentialsId: 'github',
-                                    url: 'https://github.com/trustbridge/ethereum-channel'
+                                    url: 'https://github.com/trustbridge/etherium-channel'
                                 ]]
                             ]
                         )
