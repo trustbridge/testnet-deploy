@@ -28,13 +28,13 @@ pipeline {
 
     parameters {
         string(
-            name: 'branchref_ethereum-channel',
+            name: 'branchref_ethereum_channel',
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
 
         booleanParam(
-            name: 'force_ethereum-channel',
+            name: 'force_ethereum_channel',
             defaultValue: false,
             description: 'Force build of channel api components'
         )
@@ -43,19 +43,19 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                dir('ethereum-channel/') {
+                dir('ethereum_channel/') {
                     script {
                         def repoethereumChannel = checkout(
                             [
                                 $class: 'GitSCM',
-                                branches: [[name: "${params.branchref_ethereum-channel}" ]],
+                                branches: [[name: "${params.branchref_ethereum_channel}" ]],
                                 userRemoteConfigs: [[
                                     credentialsId: 'github',
                                     url: 'https://github.com/trustbridge/ethereum-channel'
                                 ]]
                             ]
                         )
-                        env.gitcommit_ethereum-channel = repoethereumChannel.GIT_COMMIT
+                        env.gitcommit_ethereum_channel = repoethereumChannel.GIT_COMMIT
                     }
                 }
             }
@@ -64,10 +64,10 @@ pipeline {
         stage('Build - ethereum Channel API - Lambda') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.force_ethereum-channel
+                    equals expected: true, actual: params.force_ethereum_channel
                     allOf {
                         not {
-                            equals expected: 'master', actual: "${params.branchref_ethereum-channell}"
+                            equals expected: 'master', actual: "${params.branchref_ethereum_channell}"
                         }
                         branch 'master'
                     }
@@ -75,9 +75,9 @@ pipeline {
             }
 
             steps {
-                echo "GIT_COMMIT is ${env.branchref_ethereum-channel}"
+                echo "GIT_COMMIT is ${env.branchref_ethereum_channel}"
 
-                dir('ethereum-channel/channel-api') {
+                dir('ethereum_channel/channel-api') {
                     sh '''#!/bin/bash
                         if [[ -d "${HOME}/.nodenv" ]]; then
                             export PATH="$HOME/.nodenv/bin:$PATH"
@@ -95,7 +95,7 @@ pipeline {
 
             post {
                 success {
-                    dir('ethereum-channel/channel-api') {
+                    dir('ethereum_channel/channel-api') {
                         archiveArtifacts artifacts: 'dist/channel-api.zip', fingerprint: true
                     }
 
@@ -119,10 +119,10 @@ pipeline {
         stage('Artefact - ethereum Channel API - Lambda') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.force_ethereum-channel
+                    equals expected: true, actual: params.force_ethereum_channel
                     allOf {
                         not {
-                            equals expected: 'master', actual: "${params.branchref_ethereum-channel}"
+                            equals expected: 'master', actual: "${params.branchref_ethereum_channel}"
                         }
                         branch 'master'
                     }
@@ -134,12 +134,12 @@ pipeline {
                 deployment_units = 'ethchannel-api-imp'
                 segment = 'channel'
                 image_format = 'lambda'
-                BUILD_SRC_DIR = 'ethereum-channel/channel-api'
+                BUILD_SRC_DIR = 'ethereum_channel/channel-api'
             }
 
             steps {
 
-                dir('ethereum-channel/channel-api') {
+                dir('ethereum_channel/channel-api') {
                     sh '''
                         cp dist/channel-api.zip dist/lambda.zip
                     '''
@@ -149,12 +149,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_ethereum-channel}"
+                    "${env.gitcommit_ethereum_channel}"
                 )
 
                 build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_ethereum-channel}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_ethereum_channel}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
@@ -166,10 +166,10 @@ pipeline {
         stage('Deploy - ethereum Channel API - API GW') {
             when {
                 anyOf {
-                    equals expected: true, actual: params.force_ethereum-channel
+                    equals expected: true, actual: params.force_ethereum_channel
                     allOf {
                         not {
-                            equals expected: 'master', actual: "${params.branchref_ethereum-channel}"
+                            equals expected: 'master', actual: "${params.branchref_ethereum_channel}"
                         }
                         branch 'master'
                     }
@@ -181,13 +181,13 @@ pipeline {
                 deployment_units = 'ethchannel-api'
                 segment = 'channel'
                 image_format = 'openapi'
-                BUILD_SRC_DIR = 'ethereum-channel/channel-api/'
+                BUILD_SRC_DIR = 'ethereum_channel/channel-api/'
 
             }
 
             steps {
 
-                dir('ethereum-channel/channel-api/') {
+                dir('ethereum_channel/channel-api/') {
                     sh '''
                     zip -j openapi.zip openapi.json
                     cp openapi.zip dist/openapi.zip
@@ -198,12 +198,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_ethereum-channel}"
+                    "${env.gitcommit_ethereum_channel}"
                 )
 
                 build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_ethereum-channel}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_ethereum_channel}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}")
