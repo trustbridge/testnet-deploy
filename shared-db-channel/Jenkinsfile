@@ -302,7 +302,7 @@ pipeline {
                 BUILD_PATH = 'shared-db-channel/'
                 DOCKER_CONTEXT_DIR = 'shared-db-channel'
                 BUILD_SRC_DIR = ''
-                DOCKER_FILE = 'shared-db-channel/Dockerfile'
+                DOCKER_FILE = 'shared-db-channel/docker/api.Dockerfile'
             }
 
             steps {
