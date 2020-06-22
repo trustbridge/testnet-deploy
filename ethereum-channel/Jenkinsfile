@@ -67,7 +67,7 @@ pipeline {
                     equals expected: true, actual: params.force_ethereum_channel
                     allOf {
                         not {
-                            equals expected: 'master', actual: "${params.branchref_ethereum_channell}"
+                            equals expected: 'master', actual: "${params.branchref_ethereum_channel}"
                         }
                         branch 'master'
                     }
