@@ -253,7 +253,7 @@ pipeline {
 
                 build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_tradeportal}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_ethereum_channel}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "${env.segment}" )
