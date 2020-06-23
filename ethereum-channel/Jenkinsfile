@@ -22,6 +22,7 @@ pipeline {
     }
 
     environment {
+        slack_channel = "#igl-automatic-messages"
         properties_file = "/var/opt/properties/devnet.properties"
         GITHUB_CREDENTIALS = credentials('github')
     }
@@ -105,7 +106,7 @@ pipeline {
 
                     slackSend (
                         message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Ethereum Channel API Lambda Build",
-                        channel: "#igl-automatic-messages",
+                        channel: "${env["slack_channel"]}",
                         color: "#50C878"
                     )
                 }
@@ -113,7 +114,7 @@ pipeline {
                 failure {
                     slackSend (
                         message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Ethereum Channel API Lambda Build",
-                        channel: "#igl-automatic-messages",
+                        channel: "${env["slack_channel"]}",
                         color: "#B22222"
                     )
                 }
@@ -216,6 +217,68 @@ pipeline {
             }
 
         }
+
+        stage('Build_Aretfact - Inbound Event Listener') {
+            when {
+                anyOf {
+                    equals expected: true, actual: params.force_ethereum_channel
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_ethereum_channel}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            environment {
+                //hamlet deployment variables
+                deployment_units = 'ethchannel-inbound-worker'
+                segment = 'channel'
+                image_format = 'docker'
+                BUILD_PATH = 'ethereum_channel/inbound-event-listener/'
+                DOCKER_CONTEXT_DIR = 'ethereum_channel/inbound-event-listener/'
+                BUILD_SRC_DIR = ''
+                DOCKER_FILE = 'ethereum_channel/inbound-event-listener/worker/docker/Dockerfile'
+            }
+
+            steps {
+
+                uploadImageToRegistry(
+                    "${env.properties_file}",
+                    "${env.deployment_units.split(',')[0]}",
+                    "${env.image_format}",
+                    "${env.gitcommit_tradeportal}"
+                )
+
+                build job: '../cote-c1/deploy', wait: false, parameters: [
+                        extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_tradeportal}"),
+                        booleanParam(name: 'AUTODEPLOY', value: true),
+                        string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        string(name: 'SEGMENT', value: "${env.segment}" )
+                ]
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Ethereum Inbound Event Listener Build Completed",
+                        channel: "${env["slack_channel"]}",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Ethereum Inbound Event Listener Build Failed",
+                        channel: "${env["slack_channel"]}",
+                        color: "#B22222"
+                    )
+                }
+            }
+        }
+
     }
 
     post {
