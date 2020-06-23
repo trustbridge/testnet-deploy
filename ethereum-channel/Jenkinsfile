@@ -237,7 +237,7 @@ pipeline {
                 segment = 'channel'
                 image_format = 'docker'
                 BUILD_PATH = 'ethereum_channel/inbound-event-listener/'
-                DOCKER_CONTEXT_DIR = 'ethereum_channel/inbound-event-listener/'
+                DOCKER_CONTEXT_DIR = 'ethereum_channel/inbound-event-listener/worker'
                 BUILD_SRC_DIR = ''
                 DOCKER_FILE = 'ethereum_channel/inbound-event-listener/worker/docker/Dockerfile'
             }
