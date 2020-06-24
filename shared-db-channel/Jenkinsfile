@@ -296,7 +296,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-delivery,sharedchannel-spreader'
+                deployment_units = 'sharedchannel-delivery,sharedchannel-spreader,sharedchannel-observer'
                 segment = 'channel'
                 image_format = 'docker'
                 BUILD_PATH = 'shared-db-channel/'
