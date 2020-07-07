@@ -484,7 +484,7 @@ pipeline {
                             sh '''#!/bin/bash
                                 npm ci
                                 npx serverless package
-                                mkdir src/dist
+                                mkdir -p src/dist
                                 cp .serverless/openatt-api.zip src/dist/lambda.zip
                             '''
                         }
