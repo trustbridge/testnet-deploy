@@ -502,6 +502,37 @@ pipeline {
                         ]
                     }
                 }
+
+                stage('openatt-worker') {
+
+                    environment {
+                        //hamlet deployment variables
+                        deployment_units = 'openatt-worker,openatt-contract'
+                        segment = 'channel'
+                        image_format = 'docker'
+                        BUILD_PATH = 'ha-igl-p2/tradetrust/document-store-worker'
+                        DOCKER_CONTEXT_DIR = 'ha-igl-p2/tradetrust/document-store-worker'
+                        BUILD_SRC_DIR = ''
+                        DOCKER_FILE = 'ha-igl-p2/tradetrust/document-store-worker/Dockerfile'
+                    }
+
+                    steps {
+
+                        uploadImageToRegistry(
+                            "${env.properties_file}",
+                            "${env.deployment_units.split(',')[0]}",
+                            "${env.image_format}",
+                            "${env.gitcommit_ethereum_channel}"
+                        )
+
+                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                                extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                                string(name: 'GIT_COMMIT', value: "${env.gitcommit_haiglp2}"),
+                                booleanParam(name: 'AUTODEPLOY', value: true),
+                                string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        ]
+                    }
+                }
             }
 
             post {
