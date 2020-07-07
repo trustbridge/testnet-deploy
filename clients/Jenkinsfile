@@ -408,23 +408,25 @@ pipeline {
 
             stages{
                 stage('Setup') {
-                    dir("ha-igl-p2/") {
-                        script {
-                            def repo = checkout(
-                                [
-                                    $class: 'GitSCM',
-                                    branches: [[name: "${env.branchref_haiglp2}" ]],
-                                    userRemoteConfigs: [[
-                                        credentialsId: 'github',
-                                        url: 'https://github.com/gs-gs/ha-igl-p2'
-                                    ]]
-                                ]
-                            )
-                            env.gitcommit_haiglp2 = repo.GIT_COMMIT
+                    steps {
+                        dir("ha-igl-p2/") {
+                            script {
+                                def repo = checkout(
+                                    [
+                                        $class: 'GitSCM',
+                                        branches: [[name: "${env.branchref_haiglp2}" ]],
+                                        userRemoteConfigs: [[
+                                            credentialsId: 'github',
+                                            url: 'https://github.com/gs-gs/ha-igl-p2'
+                                        ]]
+                                    ]
+                                )
+                                env.gitcommit_haiglp2 = repo.GIT_COMMIT
+                            }
                         }
-                    }
 
-                    echo "GIT_COMMIT is ${env.gitcommit_haiglp2}"
+                        echo "GIT_COMMIT is ${env.gitcommit_haiglp2}"
+                    }
                 }
 
                 stage('openatt-api') {
