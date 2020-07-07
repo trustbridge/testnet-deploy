@@ -434,7 +434,7 @@ pipeline {
                         //hamlet deployment variables
                         deployment_units = 'openatt-api'
                         segment = 'clients'
-                        image_format = 'openapi'
+                        image_format = 'swagger'
 
                         BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-api'
                         BUILD_SRC_DIR = ''
@@ -444,7 +444,7 @@ pipeline {
 
                         dir('ha-igl-p2/tradetrust/open-attestation-api') {
                             sh '''
-                                cat api.yml | python -c 'import sys, yaml, json; y=yaml.load(sys.stdin.read()); print(json.dumps(y))' > swagger-extended-base.json
+                                cat api.yml | python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' > swagger-extended-base.json
                                 zip -j swagger.zip swagger-extended-base.json
                                 mkdir -p dist
                                 cp swagger.zip dist/swagger.zip
