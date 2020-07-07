@@ -446,8 +446,8 @@ pipeline {
                             sh '''
                                 cat api.yml | python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' > swagger-extended-base.json
                                 zip -j swagger.zip swagger-extended-base.json
-                                mkdir -p dist
-                                cp swagger.zip dist/swagger.zip
+                                mkdir -p src/dist
+                                cp swagger.zip src/dist/swagger.zip
                             '''
                         }
 
