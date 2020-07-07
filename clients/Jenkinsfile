@@ -42,6 +42,11 @@ pipeline {
             defaultValue: 'master',
             description: 'The commit to use for the deploy'
         )
+        string(
+            name: 'branchref_haiglp2',
+            defaultValue: 'master',
+            description: 'The commit to use for the deploy'
+        )
 
         booleanParam(
             name: 'force_tradeportal',
@@ -62,6 +67,11 @@ pipeline {
             name: 'force_exports',
             defaultValue: false,
             description: 'Force build of exports components'
+        )
+        booleanParam(
+            name: 'force_tradetrust',
+            defaultValue: false,
+            description: 'Force build of trade trust signing'
         )
     }
 
@@ -376,6 +386,136 @@ pipeline {
                 failure {
                     slackSend (
                         message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n Importer App Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
+        }
+
+        stage('Build_Artefact - TradeTrust') {
+             when {
+                anyOf {
+                    equals expected: true, actual: params.force_tradetrust
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_haiglp2}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            stages{
+                stage('Setup') {
+                    dir("ha-igl-p2/") {
+                        script {
+                            def repo = checkout(
+                                [
+                                    $class: 'GitSCM',
+                                    branches: [[name: "${env.branchref_haiglp2}" ]],
+                                    userRemoteConfigs: [[
+                                        credentialsId: 'github',
+                                        url: 'https://github.com/gs-gs/ha-igl-p2'
+                                    ]]
+                                ]
+                            )
+                            env.gitcommit_haiglp2 = repo.GIT_COMMIT
+                        }
+                    }
+
+                    echo "GIT_COMMIT is ${env.gitcommit_haiglp2}"
+                }
+
+                stage('openatt-api') {
+                    environment {
+                        //hamlet deployment variables
+                        deployment_units = 'openatt-api'
+                        segment = 'clients'
+                        image_format = 'openapi'
+
+                        BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-api'
+                        BUILD_SRC_DIR = ''
+                    }
+
+                    steps {
+
+                        dir('ha-igl-p2/tradetrust/open-attestation-api') {
+                            sh '''
+                                cat api.yml | python -c 'import sys, yaml, json; y=yaml.load(sys.stdin.read()); print(json.dumps(y))' > swagger-extended-base.json
+                                zip -j swagger.zip swagger-extended-base.json
+                                mkdir -p dist
+                                cp swagger.zip dist/swagger.zip
+                            '''
+                        }
+
+                        uploadImageToRegistry(
+                            "${env.properties_file}",
+                            "${env.deployment_units.split(',')[0]}",
+                            "${env.image_format}",
+                            "${env.gitcommit_importsapp}"
+                        )
+
+                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                                extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                                string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
+                                booleanParam(name: 'AUTODEPLOY', value: true),
+                                string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        ]
+                    }
+                }
+
+                stage('openatt-api-imp') {
+                    environment {
+                        //hamlet deployment variables
+                        deployment_units = 'openatt-api-imp'
+                        segment = 'clients'
+                        image_format = 'lambda'
+
+                        BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-api'
+                        BUILD_SRC_DIR = ''
+                    }
+
+                    steps {
+
+                        dir('ha-igl-p2/tradetrust/open-attestation-api') {
+                            sh '''#!/bin/bash
+                                npm ci
+                                npx serverless package
+                                mkdir dist
+                                cp .serverless/openatt-api.zip dist/lambda.zip
+                            '''
+                        }
+
+                        uploadImageToRegistry(
+                            "${env.properties_file}",
+                            "${env.deployment_units.split(',')[0]}",
+                            "${env.image_format}",
+                            "${env.gitcommit_importsapp}"
+                        )
+
+                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                                extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                                string(name: 'GIT_COMMIT', value: "${env.gitcommit_importsapp}"),
+                                booleanParam(name: 'AUTODEPLOY', value: true),
+                                string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        ]
+                    }
+                }
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n TradeTrust Build Completed",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n TradeTrust Build Failed",
                         channel: "#igl-automatic-messages",
                         color: "#B22222"
                     )
