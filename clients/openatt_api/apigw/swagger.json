@@ -1,0 +1,20 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "v1.0.0",
+      "title": "Proxy",
+      "description": "Pass all requests through to the implementation.\n"
+    },
+    "paths": {
+      "/{proxy+}": {
+        "x-amazon-apigateway-any-method": {
+        }
+      }
+    },
+    "definitions": {
+      "Empty": {
+        "type": "object",
+        "title": "Empty Schema"
+      }
+    }
+  }

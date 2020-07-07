@@ -435,21 +435,16 @@ pipeline {
                         deployment_units = 'openatt-api'
                         segment = 'clients'
                         image_format = 'swagger'
-
-                        BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-api'
-                        BUILD_SRC_DIR = ''
+                        BUILD_SRC_DIR = 'clients/'
                     }
 
                     steps {
 
-                        dir('ha-igl-p2/tradetrust/open-attestation-api') {
+                        dir('deploy/clients/openatt_api/apigw') {
                             sh '''
-                                npm install swagger-cli
-                                npx swagger-cli bundle --outfile swagger-extended-base.json --type json api.yml
-
-                                zip -j swagger.zip swagger-extended-base.json
-                                mkdir -p src/dist
-                                cp swagger.zip src/dist/swagger.zip
+                                mv "swagger.json" "swagger-extended-base.json"
+                                zip -j "swagger.zip" "swagger-extended-base.json"
+                                cp "swagger.zip" ${WORKSPACE}/clients/dist/swagger.zip
                             '''
                         }
 
