@@ -444,7 +444,10 @@ pipeline {
 
                         dir('ha-igl-p2/tradetrust/open-attestation-api') {
                             sh '''
-                                cat api.yml | python -c 'import sys, yaml, json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))' > swagger-extended-base.json
+                                npm install swagger-cli
+                                npx swagger-cli validate api.yml
+                                npx swagger-cli bundle --outfile swagger-extended-base.json --type json api.yml
+
                                 zip -j swagger.zip swagger-extended-base.json
                                 mkdir -p src/dist
                                 cp swagger.zip src/dist/swagger.zip
