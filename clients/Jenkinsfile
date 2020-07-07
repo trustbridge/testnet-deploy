@@ -444,7 +444,7 @@ pipeline {
                             sh '''
                                 mv "swagger.json" "swagger-extended-base.json"
                                 zip -j "swagger.zip" "swagger-extended-base.json"
-                                mkdir ${WORKSPACE}/clients/dist/
+                                mkdir -p ${WORKSPACE}/clients/dist/
                                 cp "swagger.zip" ${WORKSPACE}/clients/dist/swagger.zip
                             '''
                         }
