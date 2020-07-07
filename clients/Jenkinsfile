@@ -522,7 +522,7 @@ pipeline {
                             "${env.properties_file}",
                             "${env.deployment_units.split(',')[0]}",
                             "${env.image_format}",
-                            "${env.gitcommit_ethereum_channel}"
+                            "${env.gitcommit_haiglp2}"
                         )
 
                         build job: '../cote-c1/deploy-clients', wait: false, parameters: [
