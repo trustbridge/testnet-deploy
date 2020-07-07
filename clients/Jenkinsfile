@@ -445,8 +445,8 @@ pipeline {
                         dir('ha-igl-p2/tradetrust/open-attestation-api') {
                             sh '''
                                 npm install swagger-cli
-                                npx swagger-cli validate api.yml
                                 npx swagger-cli bundle --outfile swagger-extended-base.json --type json api.yml
+                                npx swagger-cli validate swagger-extended-base.json
 
                                 zip -j swagger.zip swagger-extended-base.json
                                 mkdir -p src/dist
