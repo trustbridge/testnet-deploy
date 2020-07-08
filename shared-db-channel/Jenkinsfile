@@ -245,13 +245,12 @@ pipeline {
                 IGL_DEFAULT_S3_PORT = '443'
                 IGL_DEFAULT_S3_REGION = 'ap-southeast-2'
 
-
             }
 
             steps {
 
 
-                dir('deploy/shared-db-channel/channel_api/apigw') {
+                dir('shared-db-channel/') {
                     sh '''
                     pip install -r requirements.txt
                     python ./manage.py generate_swagger
