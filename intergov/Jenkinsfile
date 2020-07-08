@@ -524,7 +524,7 @@ pipeline {
                 BUILD_PATH = 'intergov/'
                 DOCKER_CONTEXT_DIR = 'intergov/'
                 BUILD_SRC_DIR = ''
-                DOCKER_FILE = 'intergov/Dockerfile-demo'
+                DOCKER_FILE = 'intergov/docker/node.Dockerfile'
             }
 
             steps {
