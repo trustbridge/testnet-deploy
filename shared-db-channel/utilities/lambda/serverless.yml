@@ -9,7 +9,7 @@ package:
     - '!./**'
     - './api/**'
     - './migrations/**'
-    - './lambda_manage.py'
+    - './manage_production.py'
   exclude:
     - '**'
 
@@ -27,4 +27,4 @@ provider:
 
 functions:
   db_util:
-    handler: lambda_manage.dbupgrade_handler
+    handler: manage_production.dbupgrade_handler
