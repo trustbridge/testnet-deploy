@@ -135,7 +135,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-api-imp'
+                deployment_units = 'sharedchannel-api-imp,sharedchannel-api-imp-c1,sharedchannel-api-imp-c2'
                 segment = 'channel'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'shared-db-channel/'
@@ -229,7 +229,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-api'
+                deployment_units = 'sharedchannel-api,sharedchannel-api-c1,sharedchannel-api-c2'
                 segment = 'channel'
                 image_format = 'swagger'
                 BUILD_SRC_DIR = 'shared-db-channel/'
@@ -295,7 +295,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-delivery,sharedchannel-spreader,sharedchannel-observer'
+                deployment_units = 'sharedchannel-delivery,sharedchannel-spreader,sharedchannel-observer,sharedchannel-delivery-c1,sharedchannel-spreader-c1,sharedchannel-observer-c1,sharedchannel-delivery-c2,sharedchannel-spreader-c2,sharedchannel-observer-c2'
                 segment = 'channel'
                 image_format = 'docker'
                 BUILD_PATH = 'shared-db-channel/'
