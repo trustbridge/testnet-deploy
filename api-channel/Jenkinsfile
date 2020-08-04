@@ -133,7 +133,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'apichannel-api-imp-c1,apichannel-api-imp-c2'
+                deployment_units = 'apichannel-api-imp'
                 segment = 'channel'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'api-channel/'
@@ -180,7 +180,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'apichannel-api-c1,apichannel-api-c2'
+                deployment_units = 'apichannel-api'
                 segment = 'channel'
                 image_format = 'swagger'
                 BUILD_SRC_DIR = 'api-channel/'
@@ -231,7 +231,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'apichannel-delivery-c1,apichannel-spreader-c1,apichannel-delivery-c2,apichannel-spreader-c2'
+                deployment_units = 'apichannel-delivery,apichannel-spreader'
                 segment = 'channel'
                 image_format = 'docker'
                 BUILD_PATH = 'api-channel/'
