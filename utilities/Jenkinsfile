@@ -24,6 +24,9 @@ pipeline {
     environment {
         properties_file = "/var/opt/properties/devnet.properties"
         GITHUB_CREDENTIALS = credentials('github')
+
+        //Set Initial CD Environment
+        ENVIRONMENT="c1"
     }
 
     parameters {
