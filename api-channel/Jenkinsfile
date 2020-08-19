@@ -231,7 +231,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'apichannel-delivery,apichannel-spreader'
+                deployment_units = 'apichannel-delivery,apichannel-spreader,apichannel-sendproc'
                 segment = 'channel'
                 image_format = 'docker'
                 BUILD_PATH = 'api-channel/'
