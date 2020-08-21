@@ -327,7 +327,7 @@ pipeline {
 
                     steps {
 
-                        dir('ha-igl-p2/tradetrust/open-attestation-veify-api') {
+                        dir('ha-igl-p2/tradetrust/open-attestation-verify-api') {
                             sh '''
                                 npm ci
                                 npm run bundle-api-specs
@@ -368,12 +368,12 @@ pipeline {
 
                     steps {
 
-                        dir('ha-igl-p2/tradetrust/open-attestation-veify-api') {
+                        dir('ha-igl-p2/tradetrust/open-attestation-verify-api') {
                             sh '''#!/bin/bash
                                 npm ci
                                 npx serverless package
                                 mkdir -p src/dist
-                                cp .serverless/open-attestation-veify-api.zip src/dist/lambda.zip
+                                cp .serverless/open-attestation-verify-api.zip src/dist/lambda.zip
                             '''
                         }
 
