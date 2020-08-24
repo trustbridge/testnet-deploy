@@ -336,8 +336,8 @@ pipeline {
                                 npx swagger-cli bundle -t json -o swagger-extended-base.json api.yml
 
                                 zip -j "swagger.zip" "swagger-extended-base.json"
-                                mkdir -p dist/
-                                cp "swagger.zip" dist/swagger.zip
+                                mkdir -p src/dist/
+                                cp "swagger.zip" src/dist/swagger.zip
                             '''
                         }
 
