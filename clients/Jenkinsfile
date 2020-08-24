@@ -324,7 +324,7 @@ pipeline {
                         image_format = 'swagger'
 
                         BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-verify-api'
-                        BUILD_SRC_DIR = 'clients/'
+                        BUILD_SRC_DIR = ''
                     }
 
                     steps {
