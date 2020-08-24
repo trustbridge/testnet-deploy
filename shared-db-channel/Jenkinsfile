@@ -138,7 +138,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-api-imp-c1,sharedchannel-api-imp-c2'
+                deployment_units = 'sharedchannel-api-imp-c1,sharedchannel-api-imp-c2,sharedchannel-api-imp-c3,sharedchannel-api-imp-c4'
                 segment = 'channel'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'shared-db-channel/'
@@ -185,7 +185,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-utilities'
+                deployment_units = 'sharedchannel-utilities,sharedchannel-wcaa-utilities'
                 segment = 'channel'
                 image_format = 'lambda'
                 BUILD_SRC_DIR = 'shared-db-channel/'
@@ -232,7 +232,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-api-c1,sharedchannel-api-c2'
+                deployment_units = 'sharedchannel-api-c1,sharedchannel-api-c2,sharedchannel-api-c3,sharedchannel-api-c4'
                 segment = 'channel'
                 image_format = 'swagger'
                 BUILD_SRC_DIR = 'shared-db-channel/'
@@ -298,7 +298,7 @@ pipeline {
 
             environment {
                 //hamlet deployment variables
-                deployment_units = 'sharedchannel-delivery-c1,sharedchannel-spreader-c1,sharedchannel-observer-c1,sharedchannel-delivery-c2,sharedchannel-spreader-c2,sharedchannel-observer-c2'
+                deployment_units = 'sharedchannel-delivery-c1,sharedchannel-spreader-c1,sharedchannel-observer-c1,sharedchannel-delivery-c2,sharedchannel-spreader-c2,sharedchannel-observer-c2,sharedchannel-delivery-c3,sharedchannel-spreader-c3,sharedchannel-observer-c3,sharedchannel-delivery-c4,sharedchannel-spreader-c4,sharedchannel-observer-c4'
                 segment = 'channel'
                 image_format = 'docker'
                 BUILD_PATH = 'shared-db-channel/'
