@@ -322,6 +322,8 @@ pipeline {
                         deployment_units = 'openatt-verify-api'
                         segment = 'clients'
                         image_format = 'swagger'
+
+                        BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-verify-api'
                         BUILD_SRC_DIR = 'clients/'
                     }
 
@@ -334,8 +336,8 @@ pipeline {
                                 npx swagger-cli bundle -t json -o swagger-extended-base.json api.yml
 
                                 zip -j "swagger.zip" "swagger-extended-base.json"
-                                mkdir -p ${WORKSPACE}/clients/dist/
-                                cp "swagger.zip" ${WORKSPACE}/clients/dist/swagger.zip
+                                mkdir -p dist/
+                                cp "swagger.zip" dist/swagger.zip
                             '''
                         }
 
@@ -362,7 +364,7 @@ pipeline {
                         segment = 'clients'
                         image_format = 'lambda'
 
-                        BUILD_PATH = 'ha-igl-p2/tradetrust/'
+                        BUILD_PATH = 'ha-igl-p2/tradetrust/open-attestation-verify-api'
                         BUILD_SRC_DIR = ''
                     }
 
