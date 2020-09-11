@@ -57,6 +57,12 @@ pipeline {
             description: 'The commit to use for the deploy'
         )
 
+        string(
+            name: 'branchref_decentralizedenderer',
+            defaultValue: 'master',
+            description: 'The commit to use for the deploy'
+        )
+
         booleanParam(
             name: 'force_tradeportal',
             defaultValue : false,
@@ -84,6 +90,11 @@ pipeline {
         )
         booleanParam(
             name: 'force_tradetrustwebsite',
+            defaultValue: false,
+            description: 'Force build of trade trust website'
+        )
+        booleanParam(
+            name: 'force_decentralizedenderer',
             defaultValue: false,
             description: 'Force build of trade trust website'
         )
@@ -495,6 +506,99 @@ pipeline {
                 failure {
                     slackSend (
                         message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n TradeTrust Verify Build Failed",
+                        channel: "#igl-automatic-messages",
+                        color: "#B22222"
+                    )
+                }
+            }
+        }
+
+        stage('Build_Artefact - Decentralised Renderer') {
+             when {
+                anyOf {
+                    equals expected: true, actual: params.force_decentralizedenderer
+                    allOf {
+                        not {
+                            equals expected: 'master', actual: "${params.branchref_decentralizedenderer}"
+                        }
+                        branch 'master'
+                    }
+                }
+            }
+
+            stages{
+                stage('Setup') {
+                    steps {
+                        dir("ha-igl-decentralized-renderer/") {
+                            script {
+                                def repo = checkout(
+                                    [
+                                        $class: 'GitSCM',
+                                        branches: [[name: "${env.branchref_decentralizedenderer}" ]],
+                                        userRemoteConfigs: [[
+                                            credentialsId: 'github',
+                                            url: 'https://github.com/gs-gs/ha-igl-decentralized-renderer'
+                                        ]]
+                                    ]
+                                )
+                                env.gitcommit_decentralizedenderer = repo.GIT_COMMIT
+                            }
+                        }
+
+                        echo "GIT_COMMIT is ${env.gitcommit_decentralizedenderer}"
+
+                        sh '''#!/bin/bash
+                        # Create the build artefact
+                        npm ci
+                        npm run build
+                        cd dist
+                        zip -r spa.zip ./
+                        '''
+                    }
+                }
+
+                stage('tradetrust-webiste') {
+
+                    environment {
+                        //hamlet deployment variables
+                        deployment_units = 'opentt-renderer'
+                        segment = 'clients'
+                        image_format = 'spa'
+                        BUILD_PATH = 'ha-igl-decentralized-renderer/'
+                        BUILD_SRC_DIR = ''
+                    }
+
+                    steps {
+
+                        uploadImageToRegistry(
+                            "${env.properties_file}",
+                            "${env.deployment_units.split(',')[0]}",
+                            "${env.image_format}",
+                            "${env.gitcommit_decentralizedenderer}"
+                        )
+
+                        build job: '../cote-c2/deploy-clients', wait: false, parameters: [
+                                extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                                string(name: 'GIT_COMMIT', value: "${env.gitcommit_decentralizedenderer}"),
+                                booleanParam(name: 'AUTODEPLOY', value: true),
+                                string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                        ]
+                    }
+                }
+            }
+
+            post {
+                success {
+                    slackSend (
+                        message: "Build Completed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n OpenAtt Decentralised Renderer Build Complete",
+                        channel: "#igl-automatic-messages",
+                        color: "#50C878"
+                    )
+                }
+
+                failure {
+                    slackSend (
+                        message: "Build Failed - ${BUILD_DISPLAY_NAME} (<${BUILD_URL}|Open>)\n  OpenAtt Decentralised Renderer Build Failed",
                         channel: "#igl-automatic-messages",
                         color: "#B22222"
                     )
