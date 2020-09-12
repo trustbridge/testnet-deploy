@@ -543,17 +543,17 @@ pipeline {
                                 )
                                 env.gitcommit_decentralizedenderer = repo.GIT_COMMIT
                             }
+
+                            echo "GIT_COMMIT is ${env.gitcommit_decentralizedenderer}"
+
+                            sh '''#!/bin/bash
+                            # Create the build artefact
+                            npm ci
+                            npm run build
+                            cd dist
+                            zip -r spa.zip ./
+                            '''
                         }
-
-                        echo "GIT_COMMIT is ${env.gitcommit_decentralizedenderer}"
-
-                        sh '''#!/bin/bash
-                        # Create the build artefact
-                        npm ci
-                        npm run build
-                        cd dist
-                        zip -r spa.zip ./
-                        '''
                     }
                 }
 
