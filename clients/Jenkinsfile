@@ -552,6 +552,7 @@ pipeline {
                             npm run build
                             cd dist
                             zip -r spa.zip ./
+                            mv spa.zip ../src/
                             '''
                         }
                     }
