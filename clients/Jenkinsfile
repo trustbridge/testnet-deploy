@@ -561,11 +561,11 @@ pipeline {
                     }
                 }
 
-                stage('tradetrust-webiste') {
+                stage('deploy-openatt-renderer') {
 
                     environment {
                         //hamlet deployment variables
-                        deployment_units = 'opentt-renderer'
+                        deployment_units = 'openatt-renderer'
                         segment = 'clients'
                         image_format = 'spa'
                         BUILD_PATH = 'ha-igl-decentralized-renderer/'
