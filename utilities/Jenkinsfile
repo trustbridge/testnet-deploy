@@ -320,12 +320,12 @@ pipeline {
                     "${env.properties_file}",
                     "${env.deployment_units.split(',')[0]}",
                     "${env.image_format}",
-                    "${env.gitcommit_lambdalogprocessors}"
+                    "${env.gitcommit_lambdacloudwatchslack}"
                 )
 
                 build job: '../cote-services/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "mgmt")
@@ -333,7 +333,7 @@ pipeline {
 
                 build job: '../cote-services/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "channel")
@@ -341,7 +341,7 @@ pipeline {
 
                  build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "clients")
@@ -349,7 +349,7 @@ pipeline {
 
                 build job: '../cote-c1/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "intergov")
@@ -357,7 +357,7 @@ pipeline {
 
                 build job: '../cote-c2/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "clients")
@@ -365,7 +365,7 @@ pipeline {
 
                 build job: '../cote-c2/deploy', wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdalogprocessors}"),
+                        string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
                         string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
                         string(name: 'SEGMENT', value: "intergov")
