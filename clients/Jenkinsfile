@@ -30,6 +30,13 @@ pipeline {
     }
 
     parameters {
+
+        choice(
+            name: 'cd_environment',
+            choices: ['c2', 'c1'],
+            description: 'The continuous deployment environment for this build'
+        )
+
         string(
             name: 'branchref_intercustomsledger',
             defaultValue: 'master',
@@ -159,7 +166,7 @@ pipeline {
                     "${env.gitcommit_tradeportal}"
                 )
                 // CD to c2 with C1 acting as a demo env
-                build job: '../cote-c2/deploy-clients', wait: false, parameters: [
+                build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                         extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                         string(name: 'GIT_COMMIT', value: "${env.gitcommit_tradeportal}"),
                         booleanParam(name: 'AUTODEPLOY', value: true),
@@ -249,7 +256,7 @@ pipeline {
                             "${env.gitcommit_haiglp2}"
                         )
 
-                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_haiglp2}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
@@ -287,7 +294,7 @@ pipeline {
                             "${env.gitcommit_haiglp2}"
                         )
 
-                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_haiglp2}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
@@ -318,7 +325,7 @@ pipeline {
                             "${env.gitcommit_haiglp2}"
                         )
 
-                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_haiglp2}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
@@ -359,7 +366,7 @@ pipeline {
                             "${env.gitcommit_haiglp2}"
                         )
 
-                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_haiglp2}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
@@ -397,7 +404,7 @@ pipeline {
                             "${env.gitcommit_haiglp2}"
                         )
 
-                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_haiglp2}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
@@ -484,7 +491,7 @@ pipeline {
                             "${env.gitcommit_tradetrustwebsite}"
                         )
 
-                        build job: '../cote-c1/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_tradetrustwebsite}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
@@ -581,7 +588,7 @@ pipeline {
                             "${env.gitcommit_decentralizedenderer}"
                         )
 
-                        build job: '../cote-c2/deploy-clients', wait: false, parameters: [
+                        build job: "../cote-${params["cd_environment"]}/deploy-clients", wait: false, parameters: [
                                 extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
                                 string(name: 'GIT_COMMIT', value: "${env.gitcommit_decentralizedenderer}"),
                                 booleanParam(name: 'AUTODEPLOY', value: true),
