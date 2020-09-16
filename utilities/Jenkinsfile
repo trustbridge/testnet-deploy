@@ -347,33 +347,13 @@ pipeline {
                                 }
                                 axis {
                                     name 'ENVIRONMENT'
-                                    values 'c1'
+                                    values 'c1', 'c2'
                                 }
                             }
                             exclude {
                                 axis {
                                     name 'SEGMENT'
-                                    values 'mgmt'
-                                }
-                                axis {
-                                    name 'ENVIRONMENT'
-                                    values 'c2'
-                                }
-                            }
-                            exclude {
-                                axis {
-                                    name 'SEGMENT'
-                                    values 'intergov'
-                                }
-                                axis {
-                                    name 'ENVIRONMENT'
-                                    values 'services'
-                                }
-                            }
-                            exclude {
-                                axis {
-                                    name 'SEGMENT'
-                                    values 'clients'
+                                    values 'intergov', 'clients'
                                 }
                                 axis {
                                     name 'ENVIRONMENT'
