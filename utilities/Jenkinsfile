@@ -363,7 +363,7 @@ pipeline {
                             exclude {
                                 axis {
                                     name 'SEGMENT'
-                                    notValues 'intergov'
+                                    values 'intergov'
                                 }
                                 axis {
                                     name 'ENVIRONMENT'
@@ -373,7 +373,7 @@ pipeline {
                             exclude {
                                 axis {
                                     name 'SEGMENT'
-                                    notValues 'intergov'
+                                    values 'clients'
                                 }
                                 axis {
                                     name 'ENVIRONMENT'
