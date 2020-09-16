@@ -347,7 +347,7 @@ pipeline {
                                 }
                                 axis {
                                     name 'ENVIRONMENT'
-                                    values 'c1', 'c2'
+                                    values 'c1'
                                 }
                             }
                             exclude {
