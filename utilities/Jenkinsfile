@@ -361,20 +361,26 @@ pipeline {
                                 }
                             }
                         }
+
+                        stages{
+                            stage('Start Deploy') {
+                                steps {
+
+                                    echo "Deploy - ${ENVIRONMENT} - ${SEGMENT}"
+
+                                    build job: "../cote-${ENVIRONMENT}/deploy", wait: false, parameters: [
+                                            extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
+                                            string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
+                                            booleanParam(name: 'AUTODEPLOY', value: true),
+                                            string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
+                                            string(name: 'SEGMENT', value: "${SEGMENT}")
+                                    ]
+                                }
+                            }
+                        }
                     }
 
-                    steps {
 
-                        echo "Deploy - ${ENVIRONMENT} - ${SEGMENT}"
-
-                        build job: "../cote-${ENVIRONMENT}/deploy", wait: false, parameters: [
-                                extendedChoice(name: 'DEPLOYMENT_UNITS', value: "${env.deployment_units}"),
-                                string(name: 'GIT_COMMIT', value: "${env.gitcommit_lambdacloudwatchslack}"),
-                                booleanParam(name: 'AUTODEPLOY', value: true),
-                                string(name: 'IMAGE_FORMATS', value: "${env.image_format}"),
-                                string(name: 'SEGMENT', value: "${SEGMENT}")
-                        ]
-                    }
                 }
             }
         }
