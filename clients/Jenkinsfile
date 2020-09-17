@@ -33,7 +33,7 @@ pipeline {
 
         choice(
             name: 'cd_environment',
-            choices: ['c2', 'c1'],
+            choices: ['c1', 'c2'],
             description: 'The continuous deployment environment for this build'
         )
 
